@@ -13,11 +13,12 @@ const _r = {
 	number: (x: any) => typeof x === "number",
 	bool: (x: any) => x === true || x === false,
 	symbol: (x: any) => typeof x === "symbol",
-	object: (x: any) => typeof x === "object",
+	object: (x: any) => !!x && typeof x === "object",
 
-	is: (X: new (...args: any) => any, x: any) => x instanceof X,
-	type: (name: string, x: any) => typeof x === name,
-	toStringTag: (type: types, x: any) => x && x[Symbol.toStringTag] === type,
+	is: (X: new (...args: any) => any, x: any) =>
+		_r.object(X) && (x.constructor === X || x instanceof X),
+	type: (name: string, x: any) => (name === "null" && x === null) || typeof x === name,
+	toStringTag: (type: types, x: any) => _r.object(x) && x[Symbol.toStringTag] === type,
 	or: (fs: Predicate[], x: any) => fs.reduce((last, f) => last || f(x), false),
 	and: (fs: Predicate[], x: any) => fs.reduce((last, f) => last && f(x), true),
 	maybe: (f: Predicate, x: any) => _r.or([f, _r.nil], x),
@@ -26,19 +27,16 @@ const _r = {
 	Array: (f: Predicate, xs: any[]) => xs.every(x => f(x)),
 };
 
-type Addn = "sum" | "product" | "optional" | "Struct";
-
-const r: Record<keyof typeof _r, Predicate> &
-	{ [k in Addn]: Predicate } & { P: (f: Predicate) => (...args: any) => Predicate } = {
+export const r = {
 	..._r,
 
 	sum: _r.or,
 	product: _r.and,
 	optional: _r.maybe,
 
-	P: f => (...args) => x => f(...args, x),
+	P: (f: Predicate) => (...args: any) => (x: any) => f(...args, x),
 
-	Struct: (struct: Record<string, Predicate>, x) => {
+	Struct: (struct: Record<string, Predicate>, x: any) => {
 		for (const key in struct) {
 			const pred = struct[key];
 			if (!pred(x[key])) return false;

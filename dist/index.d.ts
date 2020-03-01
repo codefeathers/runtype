@@ -1,0 +1,30 @@
+declare type Predicate = (...x: any) => boolean;
+declare type types = "string" | "number" | "symbol" | "boolean" | "object" | "undefined";
+export declare const r: {
+    sum: (fs: Predicate[], x: any) => boolean;
+    product: (fs: Predicate[], x: any) => boolean;
+    optional: (f: Predicate, x: any) => boolean;
+    P: (f: Predicate) => (...args: any) => (x: any) => boolean;
+    Struct: (struct: Record<string, Predicate>, x: any) => boolean;
+    T: () => boolean;
+    F: () => boolean;
+    any: () => boolean;
+    nil: (x: any) => boolean;
+    null: (x: any) => boolean;
+    undefined: (x: any) => boolean;
+    string: (x: any) => boolean;
+    number: (x: any) => boolean;
+    bool: (x: any) => boolean;
+    symbol: (x: any) => boolean;
+    object: (x: any) => boolean;
+    is: (X: new (...args: any) => any, x: any) => boolean;
+    type: (name: string, x: any) => boolean;
+    toStringTag: (type: types, x: any) => boolean;
+    or: (fs: Predicate[], x: any) => boolean;
+    and: (fs: Predicate[], x: any) => boolean;
+    maybe: (f: Predicate, x: any) => boolean;
+    refinement: (f: Predicate, g: Predicate, x: any) => boolean;
+    Array: (f: Predicate, xs: any[]) => boolean;
+};
+export {};
+//# sourceMappingURL=index.d.ts.map
