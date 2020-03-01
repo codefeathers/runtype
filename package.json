@@ -1,0 +1,22 @@
+{
+	"name": "@codefeathers/runtype",
+	"version": "0.0.1",
+	"main": "dist",
+	"description": "Runtime type assertions that return",
+	"author": "Muthu Kumar <@MKRhere> (https://mkr.pw)",
+	"license": "MIT",
+	"tags": [
+		"assertion",
+		"testing"
+	],
+	"scripts": {
+		"test": "ava",
+		"build": "rimraf dist && tsc",
+		"preinstall": "node scripts/use-pnpm"
+	},
+	"devDependencies": {
+		"ava": "^3.4.0",
+		"rimraf": "^3.0.2",
+		"typescript": "^3.8.3"
+	}
+}
