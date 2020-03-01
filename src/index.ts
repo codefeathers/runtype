@@ -23,6 +23,7 @@ const _r = {
 	and: (fs: Predicate[], x: any) => fs.reduce((last, f) => last && f(x), true),
 	maybe: (f: Predicate, x: any) => _r.or([f, _r.nil], x),
 	refinement: (f: Predicate, g: Predicate, x: any) => _r.and([f, g], x),
+	product: (fs: Predicate[], xs: any[]) => fs.every((f, i) => f(xs[i])),
 
 	Array: (f: Predicate, xs: any[]) => xs.every(x => f(x)),
 };
@@ -31,7 +32,6 @@ export const r = {
 	..._r,
 
 	sum: _r.or,
-	product: _r.and,
 	optional: _r.maybe,
 
 	P: (f: Predicate) => (...args: any) => (x: any) => f(...args, x),
