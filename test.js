@@ -1,6 +1,6 @@
 const test = require("ava");
 
-const { r } = require("./dist");
+const r = require("./dist").default;
 
 test("T", t => {
 	const res = r.T();
@@ -17,247 +17,303 @@ test("any", t => {
 	t.true(res);
 });
 
-test("nil without param", t => {
-	const res = r.nil();
-	t.true(res);
+test("nil", t => {
+	t.plan(4);
+	{
+		// undefined
+		const res = r.nil();
+		t.true(res);
+	}
+	{
+		// undefined, expicit
+		const res = r.nil(undefined);
+		t.true(res);
+	}
+	{
+		// null
+		const res = r.nil(null);
+		t.true(res);
+	}
+	{
+		// falsy
+		const res = r.nil(0);
+		t.false(res);
+	}
 });
 
-test("nil with undefined", t => {
-	const res = r.nil(undefined);
-	t.true(res);
+test("null", t => {
+	t.plan(3);
+	{
+		// undefined
+		const res = r.null();
+		t.false(res);
+	}
+	{
+		// undefined, expicit
+		const res = r.null(undefined);
+		t.false(res);
+	}
+	{
+		// null
+		const res = r.null(null);
+		t.true(res);
+	}
 });
 
-test("nil with falsy", t => {
-	const res = r.nil(0);
-	t.false(res);
+test("undefined", t => {
+	t.plan(3);
+	{
+		// undefined
+		const res = r.undefined();
+		t.true(res);
+	}
+	{
+		// undefined, explicit
+		const res = r.undefined(undefined);
+		t.true(res);
+	}
+	{
+		//explicit null
+		const res = r.undefined(null);
+		t.false(res);
+	}
 });
 
-test("null without param", t => {
-	const res = r.null();
-	t.false(res);
+test("string", t => {
+	t.plan(4);
+	{
+		// undefined
+		const res = r.string();
+		t.false(res);
+	}
+	{
+		// empty string
+		const res = r.string("");
+		t.true(res);
+	}
+	{
+		// proper string
+		const res = r.string("Hello");
+		t.true(res);
+	}
+	{
+		// non-string
+		const res = r.string(5);
+		t.false(res);
+	}
 });
 
-test("null with null", t => {
-	const res = r.null(null);
-	t.true(res);
+test("number", t => {
+	t.plan(4);
+	{
+		// without params
+		const res = r.number();
+		t.false(res);
+	}
+	{
+		// with simple param
+		const res = r.number(5);
+		t.true(res);
+	}
+	{
+		// with NaN
+		const res = r.number(NaN);
+		t.true(res);
+	}
+	{
+		// with undefined
+		const res = r.number(undefined);
+		t.false(res);
+	}
 });
 
-test("undefined without param", t => {
-	const res = r.undefined();
-	t.true(res);
+test("bool", t => {
+	t.plan(3);
+	{
+		// without params
+		const res = r.bool();
+		t.false(res);
+	}
+	{
+		// with true
+		const res = r.bool(true);
+		t.true(res);
+	}
+	{
+		// with false
+		const res = r.bool(false);
+		t.true(res);
+	}
 });
 
-test("undefined with explicit undefined", t => {
-	const res = r.undefined(undefined);
-	t.true(res);
+test("symbol", t => {
+	t.plan(3);
+	{
+		// without param
+		const res = r.symbol();
+		t.false(res);
+	}
+	{
+		// with symbol
+		const res = r.symbol(Symbol("symbol"));
+		t.true(res);
+	}
+	{
+		// with well-known symbol
+		const res = r.symbol(Symbol.iterator);
+		t.true(res);
+	}
 });
 
-test("undefined with explicit null", t => {
-	const res = r.undefined(null);
-	t.false(res);
+test("object", t => {
+	t.plan(5);
+	{
+		// without param
+		const res = r.object();
+		t.false(res);
+	}
+	{
+		// with null
+		const res = r.object(null);
+		t.false(res);
+	}
+	{
+		// with object literal
+		const res = r.object({});
+		t.true(res);
+	}
+	{
+		// with array literal
+		const res = r.object([]);
+		t.true(res);
+	}
+	{
+		// with Map
+		const res = r.object(new Map());
+		t.true(res);
+	}
 });
 
-test("string without param", t => {
-	const res = r.string();
-	t.false(res);
+test("is", t => {
+	t.plan(8);
+	{
+		// without param
+		const res = r.is()();
+		t.false(res);
+	}
+	{
+		// with garbage
+		const res = r.is(5)(5);
+		t.false(res);
+	}
+	{
+		// with more garbage
+		const res = r.is("5")(5);
+		t.false(res);
+	}
+	{
+		// with even more garbage
+		const res = r.is([])(5);
+		t.false(res);
+	}
+	{
+		// with Object constructor
+		const res = r.is(Object)({});
+		t.true(res);
+	}
+	{
+		// with Array constructor
+		const res = r.is(Array)([]);
+		t.true(res);
+	}
+	{
+		// with Set constructor
+		const res = r.is(Set)(new Set());
+		t.true(res);
+	}
+	{
+		// with Map constructor
+		const res = r.is(Map)(new Map());
+		t.true(res);
+	}
 });
 
-test("string with empty string", t => {
-	const res = r.string("");
-	t.true(res);
+test("type", t => {
+	t.plan(9);
+	{
+		// without param
+		const res = r.type()();
+		t.false(res);
+	}
+	{
+		// without one param
+		const res = r.type("string")();
+		t.false(res);
+	}
+	{
+		// with "undefined"
+		const res = r.type("undefined")();
+		t.true(res);
+	}
+	{
+		// with "string"
+		const res = r.type("string")("");
+		t.true(res);
+	}
+	{
+		// with "number", but wrong input
+		const res = r.type("number")("");
+		t.false(res);
+	}
+	{
+		// with "number"
+		const res = r.type("number")(10);
+		t.true(res);
+	}
+	{
+		// with "object"
+		const res = r.type("object")([]);
+		t.true(res);
+	}
+	{
+		// with "object", but null as input
+		const res = r.type("object")(null);
+		t.true(res);
+	}
+	{
+		// with "null" and null
+		const res = r.type("null")(null);
+		t.true(res);
+	}
 });
 
-test("string with proper string", t => {
-	const res = r.string("Hello");
-	t.true(res);
+test("stringTag", t => {
+	{
+		// without param
+		const res = r.stringTag()();
+		t.false(res);
+	}
 });
 
-test("string with non-string", t => {
-	const res = r.string(5);
-	t.false(res);
+test("or", t => {
+	{
+		// without params
+		const res = r.or([])();
+		t.false(res);
+	}
 });
 
-test("number without params", t => {
-	const res = r.number();
-	t.false(res);
-});
+// test("", t => {
+// 	const res = r.and();
+// 	t.true(res);
+// });
 
-test("number with simple param", t => {
-	const res = r.number(5);
-	t.true(res);
-});
+// test("", t => {
+// 	const res = r.maybe();
+// 	t.true(res);
+// });
 
-test("number with NaN", t => {
-	const res = r.number(NaN);
-	t.true(res);
-});
-
-test("number with undefined", t => {
-	const res = r.number(undefined);
-	t.false(res);
-});
-
-test("bool without params", t => {
-	const res = r.bool();
-	t.false(res);
-});
-
-test("bool with true", t => {
-	const res = r.bool(true);
-	t.true(res);
-});
-
-test("bool with false", t => {
-	const res = r.bool(false);
-	t.true(res);
-});
-
-test("symbol without param", t => {
-	const res = r.symbol();
-	t.false(res);
-});
-
-test("symbol with symbol", t => {
-	const res = r.symbol(Symbol("symbol"));
-	t.true(res);
-});
-
-test("symbol with well-known symbol", t => {
-	const res = r.symbol(Symbol.iterator);
-	t.true(res);
-});
-
-test("object without param", t => {
-	const res = r.object();
-	t.false(res);
-});
-
-test("object with null", t => {
-	const res = r.object(null);
-	t.true(res);
-});
-
-test("object with object literal", t => {
-	const res = r.object({});
-	t.true(res);
-});
-
-test("object with array literal", t => {
-	const res = r.object([]);
-	t.true(res);
-});
-
-test("object with Map", t => {
-	const res = r.object(new Map());
-	t.true(res);
-});
-
-test("is without param", t => {
-	const res = r.is();
-	t.false(res);
-});
-
-test("is with garbage", t => {
-	const res = r.type(5, 5);
-	t.false(res);
-});
-
-test("is with more garbage", t => {
-	const res = r.type("5", 5);
-	t.false(res);
-});
-
-test("is with even more garbage", t => {
-	const res = r.type([], 5);
-	t.false(res);
-});
-
-test("is with Object constructor", t => {
-	const res = r.type(Object, {});
-	t.true(res);
-});
-
-test("is with Array constructor", t => {
-	const res = r.type(Array, []);
-	t.true(res);
-});
-
-test("is with Set constructor", t => {
-	const res = r.type(Set, new Set());
-	t.true(res);
-});
-
-test("is with Map constructor", t => {
-	const res = r.type(Map, new Map());
-	t.true(res);
-});
-
-test("type without param", t => {
-	const res = r.type();
-	t.false(res);
-});
-
-test("type without one param", t => {
-	const res = r.type("string");
-	t.false(res);
-});
-
-test("type with undefined", t => {
-	const res = r.type("undefined");
-	t.true(res);
-});
-
-test("type with string", t => {
-	const res = r.type("string", "");
-	t.true(res);
-});
-
-test("type with number, but wrong input", t => {
-	const res = r.type("number", "");
-	t.false(res);
-});
-
-test("type with number", t => {
-	const res = r.type("number", 10);
-	t.true(res);
-});
-
-test("type with object", t => {
-	const res = r.type("object", []);
-	t.true(res);
-});
-
-test("type with object, but null as input", t => {
-	const res = r.type("object", null);
-	t.true(res);
-});
-
-test("type with null and null", t => {
-	const res = r.type("null", null);
-	t.true(res);
-});
-
-test("toStringTag without param", t => {
-	const res = r.toStringTag();
-	t.false(res);
-});
-
-test("", t => {
-	const res = r.or();
-	t.true(res);
-});
-
-test("", t => {
-	const res = r.and();
-	t.true(res);
-});
-
-test("", t => {
-	const res = r.maybe();
-	t.true(res);
-});
-
-test("", t => {
-	const res = r.refinement();
-	t.true(res);
-});
+// test("", t => {
+// 	const res = r.refinement();
+// 	t.true(res);
+// });

@@ -1,30 +1,60 @@
 declare type Predicate = (...x: any) => boolean;
 declare type types = "string" | "number" | "symbol" | "boolean" | "object" | "undefined";
-export declare const r: {
-    sum: (fs: Predicate[], x: any) => boolean;
-    product: (fs: Predicate[], x: any) => boolean;
-    optional: (f: Predicate, x: any) => boolean;
-    P: (f: Predicate) => (...args: any) => (x: any) => boolean;
-    Struct: (struct: Record<string, Predicate>, x: any) => boolean;
-    T: () => boolean;
-    F: () => boolean;
-    any: () => boolean;
-    nil: (x: any) => boolean;
-    null: (x: any) => boolean;
-    undefined: (x: any) => boolean;
-    string: (x: any) => boolean;
-    number: (x: any) => boolean;
-    bool: (x: any) => boolean;
-    symbol: (x: any) => boolean;
+declare const _default: {
+    /** Check whether x satisfies at least one of the predicates */
+    sum: (fs: Predicate[]) => (x: any) => boolean;
+    /** Check whether x satisfies at least one of the predicates */
+    union: (fs: Predicate[]) => (x: any) => boolean;
+    /** Check whether x is a tuple of type defined by fs */
+    tuple: (fs: Predicate[]) => (xs: any[]) => boolean;
+    /** Check whether x satisfies predicate, or is nil */
+    optional: (f: Predicate) => (x: any) => boolean;
+    /** Checks whether x does not satisfy the predicate */
+    not: (f: Predicate) => (x: any) => boolean;
+    /** Check whether x satisfies at least one of the predicates */
+    or: (fs: Predicate[]) => (x: any) => boolean;
+    /** Check whether x satisfies all predicates */
+    and: (fs: Predicate[]) => (x: any) => boolean;
+    /** Check whether x satisfies predicate, or is nil */
+    maybe: (f: Predicate) => (x: any) => boolean;
+    /** Check whether x satisfies a base type and a refinement */
+    refinement: (f: Predicate, g: Predicate) => (x: any) => boolean;
+    /** Check whether x is a product of types defined by fs */
+    product: (fs: Predicate[]) => (xs: any[]) => boolean;
+    /** Check whether all elements of x satisfy predicate */
+    Array: (f: Predicate) => (xs: any[]) => boolean;
+    /** Check the structure of an object to match a given predicate */
+    Struct: (struct: Record<string, Predicate>) => (x: any) => boolean;
+    /** Check whether x is an instanceof X */
+    is: (X: new (...args: any) => any) => (x: any) => boolean | undefined;
+    /** Check whether x is of type name */
+    type: (name: string) => (x: any) => boolean;
+    /** Check whether x has a [Symbol.toStringTag] of type */
+    stringTag: (type: types) => (x: any) => boolean | undefined;
+    /** Check whether x is null or undefined */
+    nil: (x: any) => x is null | undefined;
+    /** Check whether x is null */
+    null: (x: any) => x is null;
+    /** Check whether x is undefined */
+    undefined: (x: any) => x is undefined;
+    /** Check whether x is a string */
+    string: (x: any) => x is string;
+    /** Check whether x is a number */
+    number: (x: any) => x is number;
+    /** Check whether x is a boolean */
+    bool: (x: any) => x is boolean;
+    /** Check whether x is a symbol */
+    symbol: (x: any) => x is symbol;
+    /** Check whether x is an object */
     object: (x: any) => boolean;
-    is: (X: new (...args: any) => any, x: any) => boolean;
-    type: (name: string, x: any) => boolean;
-    toStringTag: (type: types, x: any) => boolean;
-    or: (fs: Predicate[], x: any) => boolean;
-    and: (fs: Predicate[], x: any) => boolean;
-    maybe: (f: Predicate, x: any) => boolean;
-    refinement: (f: Predicate, g: Predicate, x: any) => boolean;
-    Array: (f: Predicate, xs: any[]) => boolean;
+    /** Always pass */
+    any: () => boolean;
+    /** Always pass */
+    ignore: () => boolean;
+    /** Always pass */
+    T: () => boolean;
+    /** Always fail */
+    F: () => boolean;
 };
-export {};
+export default _default;
 //# sourceMappingURL=index.d.ts.map
