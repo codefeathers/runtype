@@ -1,15 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const tryCatch = (f) => (x) => {
-    try {
-        if (f(x)) {
-            return true;
-        }
-    }
-    catch {
-        return false;
-    }
-};
 const always = {
     /// ----- Always conditions ----- ////
     /** Always pass */
@@ -43,37 +33,91 @@ const primitives = {
 const runtime = {
     /// ----- Runtime type related ----- ////
     /** Check whether x is an instanceof X */
-    is: (X) => tryCatch((x) => x.constructor === X || x instanceof X),
+    is: (X) => (x) => {
+        try {
+            return x.constructor === X || x instanceof X;
+        }
+        catch {
+            return false;
+        }
+    },
     /** Check whether x is of type name */
     type: (name) => (x) => (name === "null" && x === null) || typeof x === name,
     /** Check whether x has a [Symbol.toStringTag] of type */
-    stringTag: (type) => tryCatch((x) => x[Symbol.toStringTag] === type),
+    stringTag: (type) => (x) => {
+        try {
+            return x[Symbol.toStringTag] === type;
+        }
+        catch {
+            return false;
+        }
+    },
 };
 const combiners = {
     /// ----- Combiners ----- ////
     /** Checks whether x does not satisfy the predicate */
     not: (f) => (x) => !f(x),
+    //TODO: Negated types https://github.com/Microsoft/TypeScript/pull/29317
     /** Check whether x satisfies at least one of the predicates */
-    or: (fs) => (x) => fs.reduce((last, f) => last || f(x), false),
+    or: (fs) => (x) => {
+        //TODO: variadic, couldn't be type-guarded yet
+        try {
+            return fs.reduce((last, f) => last || f(x), false);
+        }
+        catch {
+            return false;
+        }
+    },
     /** Check whether x satisfies all predicates */
-    and: (fs) => (x) => fs.reduce((last, f) => last && f(x), true),
+    and: (fs) => (x) => {
+        //TODO: variadic, couldn't be type-guarded yet
+        try {
+            return fs.reduce((last, f) => last && f(x), true);
+        }
+        catch {
+            return false;
+        }
+    },
+    /** Check whether x is a product of types defined by fs */
+    product: (fs) => (xs) => {
+        //TODO: variadic, couldn't be type-guarded yet
+        try {
+            return fs.every((f, i) => f(xs[i]));
+        }
+        catch {
+            return false;
+        }
+    },
     /** Check whether x satisfies predicate, or is nil */
     maybe: (f) => (x) => combiners.or([f, primitives.nil])(x),
+    /** Check whether x satisfies either of two types */
+    either: (f, g) => (x) => f(x) || g(x),
     /** Check whether x satisfies a base type and a refinement */
     refinement: (f, g) => (x) => combiners.and([f, g])(x),
-    /** Check whether x is a product of types defined by fs */
-    product: (fs) => (xs) => fs.every((f, i) => f(xs[i])),
     /// ----- Array and Struct ----- ////
     /** Check whether all elements of x satisfy predicate */
-    Array: (f) => (xs) => xs.every(x => f(x)),
+    Array: (f) => (xs) => {
+        try {
+            return xs.every(x => f(x));
+        }
+        catch {
+            return false;
+        }
+    },
     /** Check the structure of an object to match a given predicate */
     Struct: (struct) => (x) => {
-        for (const key in struct) {
-            const pred = struct[key];
-            if (!pred(x[key]))
-                return false;
+        //TODO: complex & recursive, couldn't be type-guarded yet
+        try {
+            for (const key in struct) {
+                const pred = struct[key];
+                if (!pred(x[key]))
+                    return false;
+            }
+            return true;
         }
-        return true;
+        catch {
+            return false;
+        }
     },
 };
 const aliases = {

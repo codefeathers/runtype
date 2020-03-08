@@ -2,6 +2,7 @@ type Predicate = (...x: any) => boolean;
 type Nil = null | undefined;
 type AnyConstructor = new (...args: any) => any;
 type ObjWithStrTag<U extends string> = { [Symbol.toStringTag]: U; [k: string]: any };
+type GuardedType<T> = T extends (x: any) => x is infer T ? T : never;
 
 const always = {
 	/// ----- Always conditions ----- ////
@@ -90,9 +91,11 @@ const combiners = {
 
 	/** Checks whether x does not satisfy the predicate */
 	not: (f: Predicate) => (x: any) => !f(x),
+	//TODO: Negated types https://github.com/Microsoft/TypeScript/pull/29317
 
 	/** Check whether x satisfies at least one of the predicates */
 	or: (fs: Predicate[]) => (x: any) => {
+		//TODO: variadic, couldn't be type-guarded yet
 		try {
 			return fs.reduce((last, f) => last || f(x), false);
 		} catch {
@@ -102,6 +105,7 @@ const combiners = {
 
 	/** Check whether x satisfies all predicates */
 	and: (fs: Predicate[]) => (x: any) => {
+		//TODO: variadic, couldn't be type-guarded yet
 		try {
 			return fs.reduce((last, f) => last && f(x), true);
 		} catch {
@@ -109,14 +113,9 @@ const combiners = {
 		}
 	},
 
-	/** Check whether x satisfies predicate, or is nil */
-	maybe: (f: Predicate) => (x: any) => combiners.or([f, primitives.nil])(x),
-
-	/** Check whether x satisfies a base type and a refinement */
-	refinement: (f: Predicate, g: Predicate) => (x: any) => combiners.and([f, g])(x),
-
 	/** Check whether x is a product of types defined by fs */
 	product: (fs: Predicate[]) => (xs: any[]) => {
+		//TODO: variadic, couldn't be type-guarded yet
 		try {
 			return fs.every((f, i) => f(xs[i]));
 		} catch {
@@ -124,10 +123,24 @@ const combiners = {
 		}
 	},
 
+	/** Check whether x satisfies predicate, or is nil */
+	maybe: <T extends Predicate>(f: T) => (x: any): x is GuardedType<T> | Nil =>
+		combiners.or([f, primitives.nil])(x),
+
+	/** Check whether x satisfies either of two types */
+	either: <T extends Predicate, U extends Predicate>(f: T, g: U) => (
+		x: any,
+	): x is GuardedType<T> | GuardedType<U> => f(x) || g(x),
+
+	/** Check whether x satisfies a base type and a refinement */
+	refinement: <T extends Predicate, U extends Predicate>(f: T, g: U) => (
+		x: any,
+	): x is GuardedType<T> & GuardedType<U> => combiners.and([f, g])(x),
+
 	/// ----- Array and Struct ----- ////
 
 	/** Check whether all elements of x satisfy predicate */
-	Array: (f: Predicate) => (xs: any[]): xs is Array<any> => {
+	Array: <T extends Predicate>(f: T) => (xs: any[]): xs is Array<GuardedType<T>> => {
 		try {
 			return xs.every(x => f(x));
 		} catch {
@@ -136,9 +149,10 @@ const combiners = {
 	},
 
 	/** Check the structure of an object to match a given predicate */
-	Struct: <T extends string>(struct: Record<T, Predicate>) => (
+	Struct: <T extends string, U extends Predicate>(struct: Record<T, U>) => (
 		x: any,
 	): x is Record<keyof typeof struct, any> => {
+		//TODO: complex & recursive, couldn't be type-guarded yet
 		try {
 			for (const key in struct) {
 				const pred = struct[key];
