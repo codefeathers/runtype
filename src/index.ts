@@ -1,16 +1,7 @@
 type Predicate = (...x: any) => boolean;
-type types = "string" | "number" | "symbol" | "boolean" | "object" | "undefined";
 type Nil = null | undefined;
-
-const tryCatch = (f: any) => (x: any) => {
-	try {
-		if (f(x)) {
-			return true;
-		}
-	} catch {
-		return false;
-	}
-};
+type AnyConstructor = new (...args: any) => any;
+type ObjWithStrTag<U extends string> = { [Symbol.toStringTag]: U; [k: string]: any };
 
 const always = {
 	/// ----- Always conditions ----- ////
@@ -53,20 +44,45 @@ const primitives = {
 	symbol: (x: any): x is symbol => typeof x === "symbol",
 
 	/** Check whether x is an object */
-	object: (x: any) => !!x && typeof x === "object",
+	object: (x: any): x is object => !!x && typeof x === "object",
+};
+
+type NativeTypes = {
+	string: string;
+	number: number;
+	boolean: boolean;
+	null: null;
+	undefined: undefined;
+	object: object;
+	function: Function;
+	symbol: symbol;
+	bigint: bigint;
 };
 
 const runtime = {
 	/// ----- Runtime type related ----- ////
 
 	/** Check whether x is an instanceof X */
-	is: (X: new (...args: any) => any) => tryCatch((x: any) => x.constructor === X || x instanceof X),
+	is: <T extends AnyConstructor>(X: T) => (x: any): x is InstanceType<T> => {
+		try {
+			return x.constructor === X || x instanceof X;
+		} catch {
+			return false;
+		}
+	},
 
 	/** Check whether x is of type name */
-	type: (name: string) => (x: any) => (name === "null" && x === null) || typeof x === name,
+	type: <T extends keyof NativeTypes>(name: T) => (x: any): x is NativeTypes[T] =>
+		(name === "null" && x === null) || typeof x === name,
 
 	/** Check whether x has a [Symbol.toStringTag] of type */
-	stringTag: (type: types) => tryCatch((x: any) => x[Symbol.toStringTag] === type),
+	stringTag: <T extends string>(type: T) => (x: any): x is ObjWithStrTag<T> => {
+		try {
+			return x[Symbol.toStringTag] === type;
+		} catch {
+			return false;
+		}
+	},
 };
 
 const combiners = {
@@ -76,10 +92,22 @@ const combiners = {
 	not: (f: Predicate) => (x: any) => !f(x),
 
 	/** Check whether x satisfies at least one of the predicates */
-	or: (fs: Predicate[]) => (x: any) => fs.reduce((last, f) => last || f(x), false),
+	or: (fs: Predicate[]) => (x: any) => {
+		try {
+			return fs.reduce((last, f) => last || f(x), false);
+		} catch {
+			return false;
+		}
+	},
 
 	/** Check whether x satisfies all predicates */
-	and: (fs: Predicate[]) => (x: any) => fs.reduce((last, f) => last && f(x), true),
+	and: (fs: Predicate[]) => (x: any) => {
+		try {
+			return fs.reduce((last, f) => last && f(x), true);
+		} catch {
+			return false;
+		}
+	},
 
 	/** Check whether x satisfies predicate, or is nil */
 	maybe: (f: Predicate) => (x: any) => combiners.or([f, primitives.nil])(x),
@@ -88,21 +116,39 @@ const combiners = {
 	refinement: (f: Predicate, g: Predicate) => (x: any) => combiners.and([f, g])(x),
 
 	/** Check whether x is a product of types defined by fs */
-	product: (fs: Predicate[]) => (xs: any[]) => fs.every((f, i) => f(xs[i])),
+	product: (fs: Predicate[]) => (xs: any[]) => {
+		try {
+			return fs.every((f, i) => f(xs[i]));
+		} catch {
+			return false;
+		}
+	},
 
 	/// ----- Array and Struct ----- ////
 
 	/** Check whether all elements of x satisfy predicate */
-	Array: (f: Predicate) => (xs: any[]) => xs.every(x => f(x)),
+	Array: (f: Predicate) => (xs: any[]): xs is Array<any> => {
+		try {
+			return xs.every(x => f(x));
+		} catch {
+			return false;
+		}
+	},
 
 	/** Check the structure of an object to match a given predicate */
-	Struct: (struct: Record<string, Predicate>) => (x: any) => {
-		for (const key in struct) {
-			const pred = struct[key];
-			if (!pred(x[key])) return false;
-		}
+	Struct: <T extends string>(struct: Record<T, Predicate>) => (
+		x: any,
+	): x is Record<keyof typeof struct, any> => {
+		try {
+			for (const key in struct) {
+				const pred = struct[key];
+				if (!pred(x[key])) return false;
+			}
 
-		return true;
+			return true;
+		} catch {
+			return false;
+		}
 	},
 };
 
