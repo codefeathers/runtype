@@ -91,7 +91,7 @@ const combiners = {
     /** Check whether x satisfies predicate, or is nil */
     maybe: (f) => (x) => combiners.or([f, primitives.nil])(x),
     /** Check whether x satisfies either of two types */
-    either: (f, g) => (x) => f(x) || g(x),
+    either: (f, g) => (x) => !!(f && g) && (f(x) || g(x)),
     /** Check whether x satisfies a base type and a refinement */
     refinement: (f, g) => (x) => combiners.and([f, g])(x),
     /// ----- Array and Struct ----- ////
@@ -106,10 +106,13 @@ const combiners = {
     },
     /** Check the structure of an object to match a given predicate */
     Struct: (struct) => (x) => {
-        //TODO: complex & recursive, couldn't be type-guarded yet
         try {
             for (const key in struct) {
-                const pred = struct[key];
+                const pred = (struct[key] && typeof struct[key] === "object"
+                    ? // Assert because TypeScript does not understand that this narrows out Predicate
+                        combiners.Struct(struct[key])
+                    : // Or that this leaves us with Predicate
+                        struct[key]);
                 if (!pred(x[key]))
                     return false;
             }

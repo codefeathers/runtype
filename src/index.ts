@@ -1,8 +1,19 @@
-type Predicate = (...x: any) => boolean;
-type Nil = null | undefined;
-type AnyConstructor = new (...args: any) => any;
-type ObjWithStrTag<U extends string> = { [Symbol.toStringTag]: U; [k: string]: any };
-type GuardedType<T> = T extends (x: any) => x is infer T ? T : never;
+export type Nil = null | undefined;
+export type AnyConstructor = new (...args: any) => any;
+export type ObjWithStrTag<U extends string> = { [Symbol.toStringTag]: U; [k: string]: any };
+
+export type Predicate = (...x: any) => boolean;
+export type GuardedType<T> = T extends (x: any) => x is infer T ? T : never;
+
+export type AnyStruct = {
+	[k in string | number | symbol]: Predicate | AnyStruct;
+};
+
+export type GuardedStruct<Struct> = Struct extends (...x: any[]) => any
+	? GuardedType<Struct>
+	: {
+			[K in keyof Struct]: GuardedStruct<Struct[K]>;
+	  };
 
 const always = {
 	/// ----- Always conditions ----- ////
@@ -149,12 +160,14 @@ const combiners = {
 	},
 
 	/** Check the structure of an object to match a given predicate */
-	Struct: <T extends string, U extends Predicate, V extends Record<T, U>>(struct: V) => (
-		x: any,
-	): x is { [K in keyof typeof struct]: GuardedType<typeof struct[K]> } => {
+	Struct: <Struct extends AnyStruct>(struct: Struct) => (x: any): x is GuardedStruct<Struct> => {
 		try {
 			for (const key in struct) {
-				const pred = struct[key];
+				const pred = (struct[key] && typeof struct[key] === "object"
+					? // Assert because TypeScript does not understand that this narrows out Predicate
+					  combiners.Struct(struct[key] as AnyStruct)
+					: // Or that this leaves us with Predicate
+					  struct[key]) as Predicate;
 				if (!pred(x[key])) return false;
 			}
 

@@ -1,10 +1,17 @@
-declare type Predicate = (...x: any) => boolean;
-declare type AnyConstructor = new (...args: any) => any;
-declare type ObjWithStrTag<U extends string> = {
+export declare type Nil = null | undefined;
+export declare type AnyConstructor = new (...args: any) => any;
+export declare type ObjWithStrTag<U extends string> = {
     [Symbol.toStringTag]: U;
     [k: string]: any;
 };
-declare type GuardedType<T> = T extends (x: any) => x is infer T ? T : never;
+export declare type Predicate = (...x: any) => boolean;
+export declare type GuardedType<T> = T extends (x: any) => x is infer T ? T : never;
+export declare type AnyStruct = {
+    [k in string | number | symbol]: Predicate | AnyStruct;
+};
+export declare type GuardedStruct<Struct> = Struct extends (...x: any[]) => any ? GuardedType<Struct> : {
+    [K in keyof Struct]: GuardedStruct<Struct[K]>;
+};
 declare type NativeTypes = {
     string: string;
     number: number;
@@ -42,13 +49,13 @@ declare const _default: {
     /** Check whether all elements of x satisfy predicate */
     Array: <T_3 extends Predicate>(f: T_3) => (xs: any[]) => xs is GuardedType<T_3>[];
     /** Check the structure of an object to match a given predicate */
-    Struct: <T_4 extends string, U_2 extends Predicate>(struct: Record<T_4, U_2>) => (x: any) => x is Record<T_4, any>;
+    Struct: <Struct extends AnyStruct>(struct: Struct) => (x: any) => x is GuardedStruct<Struct>;
     /** Check whether x is an instanceof X */
-    is: <T_5 extends AnyConstructor>(X: T_5) => (x: any) => x is InstanceType<T_5>;
+    is: <T_4 extends AnyConstructor>(X: T_4) => (x: any) => x is InstanceType<T_4>;
     /** Check whether x is of type name */
-    type: <T_6 extends "string" | "number" | "bigint" | "boolean" | "symbol" | "undefined" | "object" | "function" | "null">(name: T_6) => (x: any) => x is NativeTypes[T_6];
+    type: <T_5 extends "string" | "number" | "bigint" | "boolean" | "symbol" | "undefined" | "object" | "function" | "null">(name: T_5) => (x: any) => x is NativeTypes[T_5];
     /** Check whether x has a [Symbol.toStringTag] of type */
-    stringTag: <T_7 extends string>(type: T_7) => (x: any) => x is ObjWithStrTag<T_7>;
+    stringTag: <T_6 extends string>(type: T_6) => (x: any) => x is ObjWithStrTag<T_6>;
     /** Check whether x is null or undefined */
     nil: (x: any) => x is null | undefined;
     /** Check whether x is null */

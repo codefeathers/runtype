@@ -293,27 +293,108 @@ test("stringTag", t => {
 		const res = r.stringTag()();
 		t.false(res);
 	}
+	{
+		// with incorrect string tag
+		class X {
+			get [Symbol.toStringTag]() {
+				return "X";
+			}
+		}
+		const x = new X();
+		const res = r.stringTag("Y")(x);
+		t.false(res);
+	}
+	{
+		// with correct param
+		class X {
+			get [Symbol.toStringTag]() {
+				return "X";
+			}
+		}
+		const x = new X();
+		const res = r.stringTag("X")(x);
+		t.true(res);
+	}
+});
+
+test("either", t => {
+	{
+		// without params
+		const res = r.either()();
+		t.false(res);
+	}
+	{
+		// with matching predicates
+		const res = r.either(r.string, r.number)(20);
+		t.true(res);
+	}
+	{
+		// with non-matching predicates
+		const res = r.either(r.string, r.number)({});
+		t.false(res);
+	}
 });
 
 test("or", t => {
+	t.plan(4);
 	{
 		// without params
 		const res = r.or([])();
 		t.false(res);
 	}
+	{
+		// with single predicate
+		const res = r.or([r.string])("");
+		t.true(res);
+	}
+	{
+		// with several predicates
+		const res = r.or([r.string, r.number, r.bool])(5);
+		t.true(res);
+	}
+	{
+		// with several predicates, none of which are satisfied
+		const res = r.or([r.string, r.number, r.bool])(null);
+		t.false(res);
+	}
 });
 
-// test("", t => {
-// 	const res = r.and();
-// 	t.true(res);
-// });
+test("struct", t => {
+	t.plan(2);
+	{
+		// with a valid struct
+		const res = r.Struct({
+			x: r.string,
+			y: r.number,
+			z: {
+				a: r.Array(r.either(r.number, r.string)),
+			},
+		})({
+			x: "string",
+			y: 42,
+			z: {
+				a: ["string", 42, "string", "string"],
+			},
+		});
 
-// test("", t => {
-// 	const res = r.maybe();
-// 	t.true(res);
-// });
+		t.true(res);
+	}
+	{
+		// with a valid struct
+		const res = r.Struct({
+			x: r.number,
+			y: r.number,
+			z: {
+				a: r.Array(r.either(r.number, r.string)),
+			},
+		})({
+			x: "string",
+			y: 42,
+			z: {
+				a: ["string", 42, "string", "string"],
+			},
+		});
 
-// test("", t => {
-// 	const res = r.refinement();
-// 	t.true(res);
-// });
+		t.false(res);
+	}
+});
