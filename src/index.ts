@@ -2,7 +2,7 @@ export type Nil = null | undefined;
 export type AnyConstructor = new (...args: any) => any;
 export type ObjWithStrTag<U extends string> = { [Symbol.toStringTag]: U; [k: string]: any };
 
-export type Predicate = (...x: any) => boolean;
+export type Predicate = (x: any) => boolean;
 export type GuardedType<T> = T extends (x: any) => x is infer T ? T : never;
 
 export type AnyStruct = {
@@ -141,7 +141,7 @@ const combiners = {
 	/** Check whether x satisfies either of two types */
 	either: <T extends Predicate, U extends Predicate>(f: T, g: U) => (
 		x: any,
-	): x is GuardedType<T> | GuardedType<U> => !!(f && g) && (f(x) || g(x)),
+	): x is GuardedType<T | U> => !!(f && g) && (f(x) || g(x)),
 
 	/** Check whether x satisfies a base type and a refinement */
 	refinement: <T extends Predicate, U extends Predicate>(f: T, g: U) => (
