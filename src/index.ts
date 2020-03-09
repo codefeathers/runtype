@@ -149,10 +149,9 @@ const combiners = {
 	},
 
 	/** Check the structure of an object to match a given predicate */
-	Struct: <T extends string, U extends Predicate>(struct: Record<T, U>) => (
+	Struct: <T extends string, U extends Predicate, V extends Record<T, U>>(struct: V) => (
 		x: any,
-	): x is Record<keyof typeof struct, any> => {
-		//TODO: complex & recursive, couldn't be type-guarded yet
+	): x is { [K in keyof typeof struct]: GuardedType<typeof struct[K]> } => {
 		try {
 			for (const key in struct) {
 				const pred = struct[key];
