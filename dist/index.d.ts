@@ -4,7 +4,7 @@ export declare type ObjWithStrTag<U extends string> = {
     [Symbol.toStringTag]: U;
     [k: string]: any;
 };
-export declare type Predicate = (...x: any) => boolean;
+export declare type Predicate = (x: any) => boolean;
 export declare type GuardedType<T> = T extends (x: any) => x is infer T ? T : never;
 export declare type AnyStruct = {
     [k in string | number | symbol]: Predicate | AnyStruct;
