@@ -88,10 +88,10 @@ const combiners = {
             return false;
         }
     },
-    /** Check whether x satisfies predicate, or is nil */
-    maybe: (f) => (x) => combiners.or([f, primitives.nil])(x),
     /** Check whether x satisfies either of two types */
     either: (f, g) => (x) => !!(f && g) && (f(x) || g(x)),
+    /** Check whether x satisfies predicate, or is nil */
+    maybe: (f) => (x) => combiners.either(f, primitives.nil)(x),
     /** Check whether x satisfies a base type and a refinement */
     refinement: (f, g) => (x) => combiners.and([f, g])(x),
     /// ----- Array and Struct ----- ////

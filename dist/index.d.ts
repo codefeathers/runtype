@@ -40,10 +40,10 @@ declare const _default: {
     and: (fs: Predicate[]) => (x: any) => boolean;
     /** Check whether x is a product of types defined by fs */
     product: (fs: Predicate[]) => (xs: any[]) => boolean;
-    /** Check whether x satisfies predicate, or is nil */
-    maybe: <T extends Predicate>(f: T) => (x: any) => x is GuardedType<T> | null | undefined;
     /** Check whether x satisfies either of two types */
     either: <T_1 extends Predicate, U extends Predicate>(f: T_1, g: U) => (x: any) => x is GuardedType<T_1> | GuardedType<U>;
+    /** Check whether x satisfies predicate, or is nil */
+    maybe: <T extends Predicate>(f: T) => (x: any) => x is GuardedType<T> | null | undefined;
     /** Check whether x satisfies a base type and a refinement */
     refinement: <T_2 extends Predicate, U_1 extends Predicate>(f: T_2, g: U_1) => (x: any) => x is GuardedType<T_2> & GuardedType<U_1>;
     /** Check whether all elements of x satisfy predicate */

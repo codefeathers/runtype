@@ -134,14 +134,14 @@ const combiners = {
 		}
 	},
 
-	/** Check whether x satisfies predicate, or is nil */
-	maybe: <T extends Predicate>(f: T) => (x: any): x is GuardedType<T> | Nil =>
-		combiners.or([f, primitives.nil])(x),
-
 	/** Check whether x satisfies either of two types */
 	either: <T extends Predicate, U extends Predicate>(f: T, g: U) => (
 		x: any,
 	): x is GuardedType<T | U> => !!(f && g) && (f(x) || g(x)),
+
+	/** Check whether x satisfies predicate, or is nil */
+	maybe: <T extends Predicate>(f: T) => (x: any): x is GuardedType<T> | Nil =>
+		combiners.either(f, primitives.nil)(x),
 
 	/** Check whether x satisfies a base type and a refinement */
 	refinement: <T extends Predicate, U extends Predicate>(f: T, g: U) => (
