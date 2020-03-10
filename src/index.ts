@@ -2,7 +2,9 @@ export type Nil = null | undefined;
 export type AnyConstructor = new (...args: any) => any;
 export type ObjWithStrTag<U extends string> = { [Symbol.toStringTag]: U; [k: string]: any };
 
-export type Predicate = (x: any) => boolean;
+export type callback = (passing: boolean, msg?: string) => void;
+
+export type Predicate = (x: any, f?: callback) => boolean;
 export type GuardedType<T> = T extends (x: any) => x is infer T ? T : never;
 
 export type AnyStruct = {
@@ -31,32 +33,45 @@ const always = {
 	F: () => false,
 };
 
+const wrapPred = <T extends Predicate>(f: T, msg: (x: any) => string): Predicate => (
+	x: any,
+	cb?: callback,
+): x is GuardedType<T> => {
+	const res = f(x);
+	cb && cb(res, res ? msg(x) : undefined);
+	return res;
+};
+
+const PrimitiveMsg = (types: string[]) => {
+	return (ctx: any) => String(ctx) + " does not satisfy type " + types.join(" | ");
+};
+
 const primitives = {
 	/// ----- Primitives ----- ////
 
 	/** Check whether x is null or undefined */
-	nil: (x: any): x is Nil => x == null,
+	nil: wrapPred((x): x is Nil => x == null, PrimitiveMsg(["null", "undefined"])),
 
 	/** Check whether x is null */
-	null: (x: any): x is null => x === null,
+	null: wrapPred((x): x is null => x === null, PrimitiveMsg(["null"])),
 
 	/** Check whether x is undefined */
-	undefined: (x: any): x is undefined => x === undefined,
+	undefined: wrapPred((x): x is undefined => x === undefined, PrimitiveMsg(["undefined"])),
 
 	/** Check whether x is a string */
-	string: (x: any): x is string => typeof x === "string",
+	string: wrapPred((x): x is string => typeof x === "string", PrimitiveMsg(["string"])),
 
 	/** Check whether x is a number */
-	number: (x: any): x is number => typeof x === "number",
+	number: wrapPred((x): x is number => typeof x === "number", PrimitiveMsg(["number"])),
 
 	/** Check whether x is a boolean */
-	bool: (x: any): x is boolean => x === true || x === false,
+	bool: wrapPred((x): x is boolean => x === true || x === false, PrimitiveMsg(["boolean"])),
 
 	/** Check whether x is a symbol */
-	symbol: (x: any): x is symbol => typeof x === "symbol",
+	symbol: wrapPred((x): x is symbol => typeof x === "symbol", PrimitiveMsg(["symbol"])),
 
 	/** Check whether x is an object */
-	object: (x: any): x is object => !!x && typeof x === "object",
+	object: wrapPred((x): x is object => !!x && typeof x === "object", PrimitiveMsg(["object"])),
 };
 
 type NativeTypes = {
@@ -71,41 +86,60 @@ type NativeTypes = {
 	bigint: bigint;
 };
 
+const RuntimeMsg = (types: string[]) => {
+	return (ctx: any) => String(ctx) + " does not satisfy type " + types.join(" | ");
+};
+
 const runtime = {
 	/// ----- Runtime type related ----- ////
 
 	/** Check whether x is an instanceof X */
-	is: <T extends AnyConstructor>(X: T) => (x: any): x is InstanceType<T> => {
-		try {
-			return x.constructor === X || x instanceof X;
-		} catch {
-			return false;
-		}
-	},
+	is: <T extends AnyConstructor>(X: T) =>
+		wrapPred(
+			(x): x is InstanceType<T> => {
+				try {
+					return x.constructor === X || x instanceof X;
+				} catch {
+					return false;
+				}
+			},
+			x => `${x} is not an instance of ${primitives.object(X) ? X.name : "Invalid constructor"}`,
+		),
 
 	/** Check whether x is of type name */
-	type: <T extends keyof NativeTypes>(name: T) => (x: any): x is NativeTypes[T] =>
-		(name === "null" && x === null) || typeof x === name,
+	type: <T extends keyof NativeTypes>(name: T) =>
+		wrapPred(
+			(x: any): x is NativeTypes[T] => (name === "null" && x === null) || typeof x === name,
+			x => `${x} does not have typeof ${name}`,
+		),
 
 	/** Check whether x has a [Symbol.toStringTag] of type */
-	stringTag: <T extends string>(type: T) => (x: any): x is ObjWithStrTag<T> => {
-		try {
-			return x[Symbol.toStringTag] === type;
-		} catch {
-			return false;
-		}
-	},
+	stringTag: <T extends string>(type: T) =>
+		wrapPred(
+			(x: any): x is ObjWithStrTag<T> => {
+				try {
+					return x[Symbol.toStringTag] === type;
+				} catch {
+					return false;
+				}
+			},
+			x => `${x} does not contain [Symbol.toStringTag] equal to ${type}`,
+		),
 };
 
 const combiners = {
 	/// ----- Combiners ----- ////
 
 	/** Checks whether x does not satisfy the predicate */
-	not: (f: Predicate) => (x: any) => !f(x),
-	//TODO: Negated types https://github.com/Microsoft/TypeScript/pull/29317
+	not: (f: Predicate) =>
+		wrapPred(
+			//TODO: Negated types https://github.com/Microsoft/TypeScript/pull/29317
+			(x: any) => !f(x),
+			x => `${x} does not satisfy the NOT condition provided`,
+		),
 
 	/** Check whether x satisfies at least one of the predicates */
-	or: (fs: Predicate[]) => (x: any) => {
+	or: (fs: Predicate[]) => (x: any, cb?: callback) => {
 		//TODO: variadic, couldn't be type-guarded yet
 		try {
 			return fs.reduce((last, f) => last || f(x), false);
@@ -115,11 +149,12 @@ const combiners = {
 	},
 
 	/** Check whether x satisfies all predicates */
-	and: (fs: Predicate[]) => (x: any) => {
+	and: (fs: Predicate[]) => (x: any, cb?: callback) => {
 		//TODO: variadic, couldn't be type-guarded yet
 		try {
 			return fs.reduce((last, f) => last && f(x), true);
 		} catch {
+			cb && cb(false, `${x} does not pass all conditions provided to r.and`);
 			return false;
 		}
 	},
