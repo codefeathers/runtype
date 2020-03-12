@@ -152,6 +152,7 @@ const combiners = {
 	product: <
 		// Predicates extends readonly Predicate[],
 		Predicates extends
+			| Tuple<Predicate, 1>
 			| Tuple<Predicate, 2>
 			| Tuple<Predicate, 3>
 			| Tuple<Predicate, 4>
