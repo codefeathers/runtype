@@ -8,6 +8,10 @@ Runtime type assertions that return.
 
 Any throwing behaviour definitely qualifies as a bug. The absense of a type-guard, or the misbehaviour of one also qualifies as a serious bug. Make issues or PRs regarding them.
 
+## How
+
+[Read the API docs.](/API.md)
+
 ## Data-last
 
 `runtype` follows the data-last style. Higher order predicates always return a function that takes the input element. This makes it easier to create composed functions ahead of time while not waiting for data. Example:
@@ -18,7 +22,7 @@ import r from "@codefeathers/runtype";
 // Array is a Higher Order Predicate (it takes a predicate as input):
 const numbers = r.Array(r.number);
 
-// which is infinitely cleaner rather than:
+// which is infinitely cleaner than:
 const numbers = x => r.Array(x, x => r.number(x));
 ```
 
