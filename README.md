@@ -10,7 +10,30 @@ Any throwing behaviour definitely qualifies as a bug. The absense of a type-guar
 
 ## How
 
-[Read the API docs.](https://github.com/codefeathers/runtype/blob/master/API.md)
+**Installation:**
+
+```bash
+npm i runtype
+```
+
+**Usage:**
+
+```ts
+import r from "@codefeathers/runtype";
+
+const { string, number, Struct } = r;
+const numbers = r.Array(number);
+
+if (string(x)) {
+	// x is a string
+}
+
+if (Struct({ a: string, b: numbers })(x)) {
+	// x is { a: string, b: number[] }
+}
+```
+
+[Read the full API docs.](https://codefeathers.github.io/runtype/API)
 
 ## Data-last
 
