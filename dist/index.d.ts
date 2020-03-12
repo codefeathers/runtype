@@ -6,12 +6,16 @@ export declare type ObjWithStrTag<U extends string> = {
 };
 export declare type Predicate = (x: any) => boolean;
 export declare type GuardedType<T> = T extends (x: any) => x is infer T ? T : never;
+export declare type PredicatesToGuards<T> = {
+    [K in keyof T]: GuardedType<T[K]>;
+};
 export declare type AnyStruct = {
     [k in string | number | symbol]: Predicate | AnyStruct;
 };
 export declare type GuardedStruct<Struct> = Struct extends (...x: any[]) => any ? GuardedType<Struct> : {
     [K in keyof Struct]: GuardedStruct<Struct[K]>;
 };
+declare type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (k: infer I) => void ? I : never;
 declare type NativeTypes = {
     string: string;
     number: number;
@@ -25,9 +29,9 @@ declare type NativeTypes = {
 };
 declare const _default: {
     /** Check whether x satisfies at least one of the predicates */
-    sum: (fs: Predicate[]) => (x: any) => boolean;
+    sum: <Predicates extends Predicate[], GuardUnion extends PredicatesToGuards<Predicates>[number]>(fs: Predicates) => (x: any) => x is GuardUnion;
     /** Check whether x satisfies at least one of the predicates */
-    union: (fs: Predicate[]) => (x: any) => boolean;
+    union: <Predicates extends Predicate[], GuardUnion extends PredicatesToGuards<Predicates>[number]>(fs: Predicates) => (x: any) => x is GuardUnion;
     /** Check whether x is a tuple of type defined by fs */
     tuple: (fs: Predicate[]) => (xs: any[]) => boolean;
     /** Check whether x satisfies predicate, or is nil */
@@ -35,9 +39,9 @@ declare const _default: {
     /** Checks whether x does not satisfy the predicate */
     not: (f: Predicate) => (x: any) => boolean;
     /** Check whether x satisfies at least one of the predicates */
-    or: (fs: Predicate[]) => (x: any) => boolean;
+    or: <Predicates extends Predicate[], GuardUnion extends PredicatesToGuards<Predicates>[number]>(fs: Predicates) => (x: any) => x is GuardUnion;
     /** Check whether x satisfies all predicates */
-    and: (fs: Predicate[]) => (x: any) => boolean;
+    and: <Predicates_1 extends Predicate[], GuardUnion_1 extends PredicatesToGuards<Predicates_1>[number]>(fs: Predicates_1) => (x: any) => x is UnionToIntersection<GuardUnion_1>;
     /** Check whether x is a product of types defined by fs */
     product: (fs: Predicate[]) => (xs: any[]) => boolean;
     /** Check whether x satisfies either of two types */

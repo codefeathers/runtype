@@ -60,7 +60,6 @@ const combiners = {
     //TODO: Negated types https://github.com/Microsoft/TypeScript/pull/29317
     /** Check whether x satisfies at least one of the predicates */
     or: (fs) => (x) => {
-        //TODO: variadic, couldn't be type-guarded yet
         try {
             return fs.reduce((last, f) => last || f(x), false);
         }
@@ -70,7 +69,6 @@ const combiners = {
     },
     /** Check whether x satisfies all predicates */
     and: (fs) => (x) => {
-        //TODO: variadic, couldn't be type-guarded yet
         try {
             return fs.reduce((last, f) => last && f(x), true);
         }

@@ -4,6 +4,7 @@ export type ObjWithStrTag<U extends string> = { [Symbol.toStringTag]: U; [k: str
 
 export type Predicate = (x: any) => boolean;
 export type GuardedType<T> = T extends (x: any) => x is infer T ? T : never;
+export type PredicatesToGuards<T> = { [K in keyof T]: GuardedType<T[K]> };
 
 export type AnyStruct = {
 	[k in string | number | symbol]: Predicate | AnyStruct;
@@ -14,6 +15,14 @@ export type GuardedStruct<Struct> = Struct extends (...x: any[]) => any
 	: {
 			[K in keyof Struct]: GuardedStruct<Struct[K]>;
 	  };
+
+// https://stackoverflow.com/questions/50374908/transform-union-type-to-intersection-type/50375286#50375286
+// How does it work? Blessed if I knew
+type UnionToIntersection<U> = (U extends any
+	? (k: U) => void
+	: never) extends (k: infer I) => void
+	? I
+	: never;
 
 const always = {
 	/// ----- Always conditions ----- ////
@@ -105,20 +114,22 @@ const combiners = {
 	//TODO: Negated types https://github.com/Microsoft/TypeScript/pull/29317
 
 	/** Check whether x satisfies at least one of the predicates */
-	or: (fs: Predicate[]) => (x: any) => {
-		//TODO: variadic, couldn't be type-guarded yet
+	or: <Predicates extends Predicate[], GuardUnion extends PredicatesToGuards<Predicates>[number]>(
+		fs: Predicates,
+	) => (x: any): x is GuardUnion => {
 		try {
-			return fs.reduce((last, f) => last || f(x), false);
+			return fs.reduce((last, f) => last || f(x), false as boolean);
 		} catch {
 			return false;
 		}
 	},
 
 	/** Check whether x satisfies all predicates */
-	and: (fs: Predicate[]) => (x: any) => {
-		//TODO: variadic, couldn't be type-guarded yet
+	and: <Predicates extends Predicate[], GuardUnion extends PredicatesToGuards<Predicates>[number]>(
+		fs: Predicates,
+	) => (x: any): x is UnionToIntersection<GuardUnion> => {
 		try {
-			return fs.reduce((last, f) => last && f(x), true);
+			return fs.reduce((last, f) => last && f(x), true as boolean);
 		} catch {
 			return false;
 		}
