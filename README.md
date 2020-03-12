@@ -10,7 +10,7 @@ Any throwing behaviour definitely qualifies as a bug. The absense of a type-guar
 
 ## How
 
-[Read the API docs.](/API.md)
+[Read the API docs.](https://github.com/codefeathers/runtype/blob/master/API.md)
 
 ## Data-last
 
