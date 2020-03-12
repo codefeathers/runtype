@@ -6,40 +6,100 @@ The following list presents the available methods and the assertion if the predi
 
 ## Always
 
-#### **`r.any(x)`**:
+#### **`any(x)`**:
 - [asserts] `x` is ignored, always returns true
-- [aliases] `r.ignore(x)`, `r.T(x)`
-#### **`r.F(x)`**:
+- [aliases] `ignore(x)`, `T(x)`
+
+#### **`F(x)`**:
 - [asserts] `x` is ignored, always returns false
 
 ## Primitives
 
-#### **`r.nil(x)`**:
+#### **`nil(x)`**:
 - [asserts] `x` is `null` or `undefined`
-#### **`r.null(x)`**:
+
+#### **`null(x)`**:
 - [asserts] `x` is `null`
-#### **`r.undefined(x)`**:
+
+#### **`undefined(x)`**:
 - [asserts] `x` is `undefined`
-#### **`r.string(x)`**:
+
+#### **`string(x)`**:
 - [asserts] `x` is a string
-#### **`r.number(x)`**:
+
+#### **`number(x)`**:
 - [asserts] `x` is a number
-#### **`r.bool(x)`**:
+
+#### **`bool(x)`**:
 - [asserts] `x` is a bool
-#### **`r.symbol(x)`**:
+
+#### **`symbol(x)`**:
 - [asserts] `x` is a symbol
-#### **`r.object(x)`**:
+
+#### **`object(x)`**:
 - [asserts] `x` is a object
 
 ## Runtime-related
 
-#### **`r.literal(<LITERAL>)(x)`**:
+#### **`literal(<LITERAL>)(x)`**:
 - [where] `<LITERAL>` is a valid string, number, boolean, or object
 - [asserts] `x` is equal to `<LITERAL>`
-- [aliases] `r.equals(x)`
+- [aliases] `equals(x)`
+
 #### **`is(<X>)(x)`**:
 - [where] `<X>` is a valid constructor
 - [asserts] `x` is an instanceof `X`
+
 #### **`type(<NAME>)(x)`**:
 - [where] `<NAME>` is a string equal to one of the possible values of `typeof`, or `"null"`
 - [asserts] `typeof x === <NAME>` (or) if `<NAME>` is `"null"`, `x` is `null`
+
+#### **`stringTag(<NAME>)(x)`**:
+- [where] `<NAME>` is a string
+- [asserts] `x[Symbol.toStringTag]` is equal to `<NAME>`
+
+## Type combinators
+
+#### **`not(<f>)(x)`**:
+- [where] `<f>` is a Predicate
+- [asserts] `x` does not satisfy predicate `<f>`
+- [warning] The type-guard for this method is not accurate. Will always default to `any`. Recommended to use `exclude` if possible
+
+#### **`exclude(<f>, <g>)(x)`**:
+- [where] `<f>` and `<g>` are Predicates
+- [asserts] `x` is a member of the type represented by `<f>`, but NOT a member of `<g>`
+
+#### **`or(<fs>)(x)`**:
+- [where] `<fs>` is an array of Predicates
+- [asserts] `x` is a member of at least one of the Predicates in `<fs>`
+- [aliases] `sum(<fs>)(x)`, `union(<fs>)(x)`
+
+#### **`and(<fs>)(x)`**:
+- [where] `<fs>` is an array of Predicates
+- [asserts] `x` satisfies all of the Predicates in `<fs>`
+
+#### **`product(<fs>)(x)`**:
+- [where] `<fs>` is a tuple of Predicates
+- [asserts] `x` is a tuple whose members are represented by the types in `<fs>` in order
+- [aliases] `tuple(<fs>)(x)`
+
+#### **`either(<f>, <g>)(x)`**:
+- [where] `<f>` and `<g>` are Predicates
+- [asserts] `x` satisfies either of the types represented by `<f>` or `<g>`
+
+#### **`maybe(<f>)(x)`**:
+- [where] `<f>` is a Predicate
+- [asserts] `x` either satisfies the type represented by `<f>`, or is `undefined | null`
+- [aliases] `maybe(<f>)(x)`
+
+#### **`refinement(<f>, <g>)(x)`**:
+- [where] `<f>` and `<g>` are Predicates
+- [asserts] `x` satisfies the type represented by `<f>`, and further the type represented by `<g>`. Also: `<f> & <g>`
+
+#### **`Array(<f>)(xs)`**:
+- [where] `<f>` is a Predicate
+- [asserts] `xs` is an array, where every member satisfies the type represented by `<f>`
+
+#### **`Struct(<struct>)(x)`**:
+- [where] `<struct>` is a JavaScript object, whose values are either another struct, or Predicates. `<struct>` may deeply nest as much as required.
+- [asserts] `x` is an object whose values satisfy the types provided by `<struct>`'s vaues. `x` must deeply nest in the same way `<struct>` is to pass

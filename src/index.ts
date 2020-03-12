@@ -102,10 +102,10 @@ const runtime = {
 	type: <T extends keyof NativeTypes>(name: T) => (x: any): x is NativeTypes[T] =>
 		x === null ? name === "null" : typeof x === name,
 
-	/** Check whether x has a [Symbol.toStringTag] value equal to `type` */
-	stringTag: <T extends string>(type: T) => (x: any): x is ObjWithStrTag<T> => {
+	/** Check whether x has a [Symbol.toStringTag] value equal to `name` */
+	stringTag: <T extends string>(name: T) => (x: any): x is ObjWithStrTag<T> => {
 		try {
-			return x[Symbol.toStringTag] === type;
+			return x[Symbol.toStringTag] === name;
 		} catch {
 			return false;
 		}
