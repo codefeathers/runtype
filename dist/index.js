@@ -1,15 +1,17 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const T = () => true;
+const F = () => false;
 const always = {
     /// ----- Always conditions ----- ////
     /** Always pass */
-    any: () => true,
+    any: T,
     /** Always pass */
-    ignore: () => true,
+    ignore: T,
     /** Always pass */
-    T: () => true,
+    T,
     /** Always fail */
-    F: () => false,
+    F,
 };
 const primitives = {
     /// ----- Primitives ----- ////
@@ -30,8 +32,13 @@ const primitives = {
     /** Check whether x is an object */
     object: (x) => !!x && typeof x === "object",
 };
+const literal = (y) => (x) => x === y;
 const runtime = {
     /// ----- Runtime type related ----- ////
+    /** Literal equality of string, number, boolean, or object */
+    literal,
+    /** Literal equality of string, number, boolean, or object */
+    equals: literal,
     /** Check whether x is an instanceof X */
     is: (X) => (x) => {
         try {
@@ -41,9 +48,9 @@ const runtime = {
             return false;
         }
     },
-    /** Check whether x is of type name */
-    type: (name) => (x) => (name === "null" && x === null) || typeof x === name,
-    /** Check whether x has a [Symbol.toStringTag] of type */
+    /** Check whether x is of type `name`, which is a possible typeof string, or "null" */
+    type: (name) => (x) => x === null ? name === "null" : typeof x === name,
+    /** Check whether x has a [Symbol.toStringTag] value equal to `type` */
     stringTag: (type) => (x) => {
         try {
             return x[Symbol.toStringTag] === type;
@@ -55,9 +62,13 @@ const runtime = {
 };
 const combiners = {
     /// ----- Combiners ----- ////
-    /** Checks whether x does not satisfy the predicate */
+    /** Checks whether x does not satisfy the predicate
+     * WARNING: Type guards will fail with not. Negated types are not supported in TS!
+     * See: Negated types https://github.com/Microsoft/TypeScript/pull/29317 */
     not: (f) => (x) => !f(x),
-    //TODO: Negated types https://github.com/Microsoft/TypeScript/pull/29317
+    //TODO: Negated type
+    /** Exclude type represented by g from type represented by f */
+    exclude: (f, g) => (x) => f(x) && !g(x),
     /** Check whether x satisfies at least one of the predicates */
     or: (fs) => (x) => {
         try {
@@ -76,9 +87,9 @@ const combiners = {
             return false;
         }
     },
-    /** Check whether x is a product of types defined by fs */
+    /** Check whether x is a product type defined by fs */
     product: (fs) => (xs) => {
-        //TODO: variadic, couldn't be type-guarded yet
+        //TODO: variadic, type-guard is limited from 2 to 15 Predicates
         try {
             return fs.every((f, i) => f(xs[i]));
         }
@@ -96,6 +107,10 @@ const combiners = {
     /** Check whether all elements of x satisfy predicate */
     Array: (f) => (xs) => {
         try {
+            // minor optimisation to ignore iterating in case of r.Array(r.any)
+            if (f === T) {
+                return Array.isArray(xs);
+            }
             return xs.every(x => f(x));
         }
         catch {
