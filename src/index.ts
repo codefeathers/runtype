@@ -24,20 +24,23 @@ type UnionToIntersection<U> = (U extends any
 	? I
 	: never;
 
+const T = () => true;
+const F = () => false;
+
 const always = {
 	/// ----- Always conditions ----- ////
 
 	/** Always pass */
-	any: () => true,
+	any: T,
 
 	/** Always pass */
-	ignore: () => true,
+	ignore: T,
 
 	/** Always pass */
-	T: () => true,
+	T,
 
 	/** Always fail */
-	F: () => false,
+	F,
 };
 
 const primitives = {
@@ -164,6 +167,10 @@ const combiners = {
 	/** Check whether all elements of x satisfy predicate */
 	Array: <T extends Predicate>(f: T) => (xs: any[]): xs is Array<GuardedType<T>> => {
 		try {
+			// minor optimisation to ignore iterating in case of r.Array(r.any)
+			if (f === (T as Predicate)) {
+				return Array.isArray(xs);
+			}
 			return xs.every(x => f(x));
 		} catch {
 			return false;
