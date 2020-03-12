@@ -6,7 +6,7 @@ The following list presents the available methods and the assertion if the predi
 
 # Table of contents
 - [Always](#always)
-	- [`T / any / ignore`](#anyx)
+	- [`T / any / ignore`](#tx)
 	- [`F`](#Fx)
 - [Primitives](#primitives)
 	- [`nil`](#nilx)
@@ -33,12 +33,14 @@ The following list presents the available methods and the assertion if the predi
 	- [`refinement`](#refinementf-gx)
 	- [`Array`](#Arrayfx)
 	- [`Struct`](#Structstructx)
+- [Unsafe](#unsafe)
+	- [`own / as`](#owntypex)
 
 ## Always
 
-#### **`any(x)`**:
+#### **`T(x)`**:
+##### aliases: **`any(x)`**, **`ignore(x)`**
 - [asserts] `x` is ignored, always returns true
-- [aliases] `ignore(x)`, `T(x)`
 
 #### **`F(x)`**:
 - [asserts] `x` is ignored, always returns false
@@ -72,9 +74,9 @@ The following list presents the available methods and the assertion if the predi
 ## Runtime-related
 
 #### **`literal(<LITERAL>)(x)`**:
+##### aliases: **`equals(x)`**
 - [where] `<LITERAL>` is a valid string, number, boolean, or object
 - [asserts] `x` is equal to `<LITERAL>`
-- [aliases] `equals(x)`
 
 #### **`is(<X>)(x)`**:
 - [where] `<X>` is a valid constructor
@@ -100,27 +102,27 @@ The following list presents the available methods and the assertion if the predi
 - [asserts] `x` is a member of the type represented by `<f>`, but NOT a member of `<g>`
 
 #### **`or(<fs>)(x)`**:
+##### aliases: **`sum(<fs>)(x)`**, **`union(<fs>)(x)`**
 - [where] `<fs>` is an array of Predicates
 - [asserts] `x` is a member of at least one of the Predicates in `<fs>`
-- [aliases] `sum(<fs>)(x)`, `union(<fs>)(x)`
 
 #### **`and(<fs>)(x)`**:
 - [where] `<fs>` is an array of Predicates
 - [asserts] `x` satisfies all of the Predicates in `<fs>`
 
 #### **`product(<fs>)(x)`**:
+##### aliases: **`tuple(<fs>)(x)`**
 - [where] `<fs>` is a tuple of Predicates
 - [asserts] `x` is a tuple whose members are represented by the types in `<fs>` in order
-- [aliases] `tuple(<fs>)(x)`
 
 #### **`either(<f>, <g>)(x)`**:
 - [where] `<f>` and `<g>` are Predicates
 - [asserts] `x` satisfies either of the types represented by `<f>` or `<g>`
 
 #### **`maybe(<f>)(x)`**:
+##### aliases: **`optional(<f>)(x)`**
 - [where] `<f>` is a Predicate
 - [asserts] `x` either satisfies the type represented by `<f>`, or is `undefined | null`
-- [aliases] `optional(<f>)(x)`
 
 #### **`refinement(<f>, <g>)(x)`**:
 - [where] `<f>` and `<g>` are Predicates
@@ -133,3 +135,22 @@ The following list presents the available methods and the assertion if the predi
 #### **`Struct(<struct>)(x)`**:
 - [where] `<struct>` is a JavaScript object, whose values are either another struct, or Predicates. `<struct>` may deeply nest as much as required.
 - [asserts] `x` is an object whose values satisfy the types provided by `<struct>`'s vaues. `x` must deeply nest in the same way `<struct>` is to pass
+
+## Unsafe
+
+These are escape hatches designed to let you tell `runtype` and subsequently TypeScript to trust you. Make sparing use of these types, and only when necessary. These are hidden under the namespace `unsafe`.
+
+```ts
+import { unsafe } from "@codefeathers/runtype";
+
+if (unsafe.own<string>(x)) {
+	// x is trusted as string
+}
+```
+
+This can be useful when you have a complex `or` type, or you have used `not`, where you might lose type information and will have to tell TypeScript what type you know will come out of the assertion.
+
+#### **`own<Type>(x)`**:
+##### aliases: **`as<Type>(x)`**
+- [where] `<Type>` is a type parameter you must pass
+- [asserts] `runtype` ignores everything and asserts that `x` is of type `<Type>`

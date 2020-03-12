@@ -154,4 +154,13 @@ exports.default = {
     ...combiners,
     ...aliases,
 };
+const unsafeBase = {
+    /** Pass a type parameter and runtype will trust the type you think x is */
+    own: (x) => true,
+};
+exports.unsafe = {
+    ...unsafeBase,
+    /** Pass a type parameter and runtype will trust the type you think it is */
+    as: unsafeBase.own,
+};
 //# sourceMappingURL=index.js.map

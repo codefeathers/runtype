@@ -1,6 +1,6 @@
 {
 	"name": "@codefeathers/runtype",
-	"version": "0.4.4",
+	"version": "0.5.0",
 	"main": "dist",
 	"description": "Runtime type assertions that return",
 	"author": "Muthu Kumar <@MKRhere> (https://mkr.pw)",

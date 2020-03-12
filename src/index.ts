@@ -250,3 +250,14 @@ export default {
 	...combiners,
 	...aliases,
 };
+
+const unsafeBase = {
+	/** Pass a type parameter and runtype will trust the type you think x is */
+	own: <T>(x: any): x is T => true,
+};
+
+export const unsafe = {
+	...unsafeBase,
+	/** Pass a type parameter and runtype will trust the type you think it is */
+	as: unsafeBase.own,
+};

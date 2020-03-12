@@ -84,4 +84,10 @@ declare const _default: {
     F: () => boolean;
 };
 export default _default;
+export declare const unsafe: {
+    /** Pass a type parameter and runtype will trust the type you think it is */
+    as: <T>(x: any) => x is T;
+    /** Pass a type parameter and runtype will trust the type you think x is */
+    own: <T>(x: any) => x is T;
+};
 //# sourceMappingURL=index.d.ts.map
