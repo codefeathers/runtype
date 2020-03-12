@@ -1,28 +1,15 @@
-export type Nil = null | undefined;
-export type AnyConstructor = new (...args: any) => any;
-export type ObjWithStrTag<U extends string> = { [Symbol.toStringTag]: U; [k: string]: any };
-
-export type Predicate = (x: any) => boolean;
-export type GuardedType<T> = T extends (x: any) => x is infer T ? T : never;
-export type PredicatesToGuards<T> = { [K in keyof T]: GuardedType<T[K]> };
-
-export type AnyStruct = {
-	[k in string | number | symbol]: Predicate | AnyStruct;
-};
-
-export type GuardedStruct<Struct> = Struct extends (...x: any[]) => any
-	? GuardedType<Struct>
-	: {
-			[K in keyof Struct]: GuardedStruct<Struct[K]>;
-	  };
-
-// https://stackoverflow.com/questions/50374908/transform-union-type-to-intersection-type/50375286#50375286
-// How does it work? Blessed if I knew
-type UnionToIntersection<U> = (U extends any
-	? (k: U) => void
-	: never) extends (k: infer I) => void
-	? I
-	: never;
+import {
+	AnyConstructor,
+	GuardedType,
+	UnionToIntersection,
+	GuardedStruct,
+	Nil,
+	ObjWithStrTag,
+	AnyStruct,
+	Predicate,
+	PredicatesToGuards,
+	Tuple,
+} from "./util";
 
 const T = () => true;
 const F = () => false;
@@ -83,8 +70,24 @@ type NativeTypes = {
 	bigint: bigint;
 };
 
+interface literal {
+	<T extends string>(y: T): (x: any) => x is T;
+	<T extends number>(y: T): (x: any) => x is T;
+	<T extends boolean>(y: T): (x: any) => x is T;
+	<T extends object>(y: T): (x: any) => x is T;
+}
+
+const literal: literal = <T extends string | number | boolean | object>(y: T) => (x: any): x is T =>
+	x === y;
+
 const runtime = {
 	/// ----- Runtime type related ----- ////
+
+	/** Literal equality of string, number, boolean, or object */
+	literal,
+
+	/** Literal equality of string, number, boolean, or object */
+	equals: literal,
 
 	/** Check whether x is an instanceof X */
 	is: <T extends AnyConstructor>(X: T) => (x: any): x is InstanceType<T> => {
@@ -95,11 +98,11 @@ const runtime = {
 		}
 	},
 
-	/** Check whether x is of type name */
+	/** Check whether x is of type `name`, which is a possible typeof string, or "null" */
 	type: <T extends keyof NativeTypes>(name: T) => (x: any): x is NativeTypes[T] =>
-		(name === "null" && x === null) || typeof x === name,
+		x === null ? name === "null" : typeof x === name,
 
-	/** Check whether x has a [Symbol.toStringTag] of type */
+	/** Check whether x has a [Symbol.toStringTag] value equal to `type` */
 	stringTag: <T extends string>(type: T) => (x: any): x is ObjWithStrTag<T> => {
 		try {
 			return x[Symbol.toStringTag] === type;
@@ -112,9 +115,16 @@ const runtime = {
 const combiners = {
 	/// ----- Combiners ----- ////
 
-	/** Checks whether x does not satisfy the predicate */
-	not: (f: Predicate) => (x: any) => !f(x),
-	//TODO: Negated types https://github.com/Microsoft/TypeScript/pull/29317
+	/** Checks whether x does not satisfy the predicate
+	 * WARNING: Type guards will fail with not. Negated types are not supported in TS!
+	 * See: Negated types https://github.com/Microsoft/TypeScript/pull/29317 */
+	not: <T extends Predicate>(f: T) => (x: any): x is Exclude<any, GuardedType<T>> => !f(x),
+	//TODO: Negated type
+
+	/** Exclude type represented by g from type represented by f */
+	exclude: <T extends Predicate, U extends Predicate>(f: T, g: U) => (
+		x: any,
+	): x is Exclude<GuardedType<T>, GuardedType<U>> => f(x) && !g(x),
 
 	/** Check whether x satisfies at least one of the predicates */
 	or: <Predicates extends Predicate[], GuardUnion extends PredicatesToGuards<Predicates>[number]>(
@@ -138,9 +148,29 @@ const combiners = {
 		}
 	},
 
-	/** Check whether x is a product of types defined by fs */
-	product: (fs: Predicate[]) => (xs: any[]) => {
-		//TODO: variadic, couldn't be type-guarded yet
+	/** Check whether x is a product type defined by fs */
+	product: <
+		// Predicates extends readonly Predicate[],
+		Predicates extends
+			| Tuple<Predicate, 2>
+			| Tuple<Predicate, 3>
+			| Tuple<Predicate, 4>
+			| Tuple<Predicate, 5>
+			| Tuple<Predicate, 6>
+			| Tuple<Predicate, 7>
+			| Tuple<Predicate, 8>
+			| Tuple<Predicate, 9>
+			| Tuple<Predicate, 10>
+			| Tuple<Predicate, 11>
+			| Tuple<Predicate, 12>
+			| Tuple<Predicate, 13>
+			| Tuple<Predicate, 14>
+			| Tuple<Predicate, 15>,
+		GuardTuple extends PredicatesToGuards<Predicates>
+	>(
+		fs: Predicates,
+	) => (xs: any): xs is GuardTuple => {
+		//TODO: variadic, type-guard is limited from 2 to 15 Predicates
 		try {
 			return fs.every((f, i) => f(xs[i]));
 		} catch {
