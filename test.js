@@ -278,7 +278,7 @@ test("type", t => {
 	{
 		// with "object", but null as input
 		const res = r.type("object")(null);
-		t.true(res);
+		t.false(res);
 	}
 	{
 		// with "null" and null

@@ -1,6 +1,6 @@
 {
 	"name": "@codefeathers/runtype",
-	"version": "0.3.1",
+	"version": "0.4.0",
 	"main": "dist",
 	"description": "Runtime type assertions that return",
 	"author": "Muthu Kumar <@MKRhere> (https://mkr.pw)",
@@ -15,7 +15,7 @@
 		"preinstall": "node scripts/use-pnpm"
 	},
 	"devDependencies": {
-		"ava": "^3.4.0",
+		"ava": "^3.5.0",
 		"rimraf": "^3.0.2",
 		"typedoc": "^0.16.11",
 		"typescript": "^3.8.3"

@@ -4,6 +4,37 @@
 
 The following list presents the available methods and the assertion if the predicate returns true:
 
+# Table of contents
+- [Always](#always)
+	- [`T / any / ignore`](#anyx)
+	- [`F`](#Fx)
+- [Primitives](#primitives)
+	- [`nil`](#nilx)
+	- [`null`](#nullx)
+	- [`undefined`](#undefinedx)
+	- [`string`](#stringx)
+	- [`number`](#numberx)
+	- [`bool`](#boolx)
+	- [`symbol`](#symbolx)
+	- [`object`](#objectx)
+- [Runtime-related](#runtime-related)
+	- [`literal`](#literalLITERALx)
+	- [`equals`](#literalLITERALx)
+	- [`is`](#isXx)
+	- [`type`](#typeNAMEx)
+	- [`stringTag`](#stringTagNAMEx)
+- [Type combiners](#type-combiners)
+	- [`not`](#notfx)
+	- [`exclude`](#excludefgx)
+	- [`or / sum / union`](#orfsx)
+	- [`and`](#andfsx)
+	- [`product / tuple`](#productfsx)
+	- [`either`](#eitherfgx)
+	- [`maybe / optional`](#maybefx)
+	- [`refinement`](#refinementfgx)
+	- [`Array`](#Arrayfx)
+	- [`Struct`](#Structstructx)
+
 ## Always
 
 #### **`any(x)`**:
@@ -58,7 +89,7 @@ The following list presents the available methods and the assertion if the predi
 - [where] `<NAME>` is a string
 - [asserts] `x[Symbol.toStringTag]` is equal to `<NAME>`
 
-## Type combinators
+## Type combiners
 
 #### **`not(<f>)(x)`**:
 - [where] `<f>` is a Predicate
@@ -90,7 +121,7 @@ The following list presents the available methods and the assertion if the predi
 #### **`maybe(<f>)(x)`**:
 - [where] `<f>` is a Predicate
 - [asserts] `x` either satisfies the type represented by `<f>`, or is `undefined | null`
-- [aliases] `maybe(<f>)(x)`
+- [aliases] `optional(<f>)(x)`
 
 #### **`refinement(<f>, <g>)(x)`**:
 - [where] `<f>` and `<g>` are Predicates

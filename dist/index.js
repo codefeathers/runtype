@@ -50,10 +50,10 @@ const runtime = {
     },
     /** Check whether x is of type `name`, which is a possible typeof string, or "null" */
     type: (name) => (x) => x === null ? name === "null" : typeof x === name,
-    /** Check whether x has a [Symbol.toStringTag] value equal to `type` */
-    stringTag: (type) => (x) => {
+    /** Check whether x has a [Symbol.toStringTag] value equal to `name` */
+    stringTag: (name) => (x) => {
         try {
-            return x[Symbol.toStringTag] === type;
+            return x[Symbol.toStringTag] === name;
         }
         catch {
             return false;

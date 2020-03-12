@@ -56,8 +56,8 @@ declare const _default: {
     is: <T_6 extends AnyConstructor>(X: T_6) => (x: any) => x is InstanceType<T_6>;
     /** Check whether x is of type `name`, which is a possible typeof string, or "null" */
     type: <T_7 extends "string" | "number" | "bigint" | "boolean" | "symbol" | "undefined" | "object" | "function" | "null">(name: T_7) => (x: any) => x is NativeTypes[T_7];
-    /** Check whether x has a [Symbol.toStringTag] value equal to `type` */
-    stringTag: <T_8 extends string>(type: T_8) => (x: any) => x is ObjWithStrTag<T_8>;
+    /** Check whether x has a [Symbol.toStringTag] value equal to `name` */
+    stringTag: <T_8 extends string>(name: T_8) => (x: any) => x is ObjWithStrTag<T_8>;
     /** Check whether x is null or undefined */
     nil: (x: any) => x is null | undefined;
     /** Check whether x is null */
