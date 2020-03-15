@@ -59,12 +59,12 @@ To be compatible with `runtype`, you MUST follow the one of the following signat
 
 ```ts
 // Simple Predicate:
-type SimplePredicate = (x: any): x is Type = {
+const SimplePredicate = (x: any): x is Type = {
 	/* runtime validation for x that returns true/false */
 };
 
 // Higher Order Predicate:
-type HOPredicate = (ctx: any) => (x: any): x is Type = {
+const HOPredicate = (ctx: any) => (x: any): x is Type = {
 	/* runtime validation for x that returns true/false */
 };
 ```
