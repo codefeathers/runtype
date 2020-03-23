@@ -6,9 +6,12 @@ The following list presents the available methods and the assertion if the predi
 
 # Table of contents
 - [Always](#always)
+
 	- [`T / any / ignore`](#tx)
-	- [`F`](#Fx)
+	- [`F`](#fx)
+
 - [Primitives](#primitives)
+
 	- [`nil`](#nilx)
 	- [`null`](#nullx)
 	- [`undefined`](#undefinedx)
@@ -17,12 +20,16 @@ The following list presents the available methods and the assertion if the predi
 	- [`bool`](#boolx)
 	- [`symbol`](#symbolx)
 	- [`object`](#objectx)
+
 - [Runtime-related](#runtime-related)
-	- [`literal / equals`](#literalLITERALx)
-	- [`is`](#isXx)
-	- [`type`](#typeNAMEx)
-	- [`stringTag`](#stringTagNAMEx)
+
+	- [`literal / equals`](#literalliteralx)
+	- [`is`](#isxx)
+	- [`type`](#typenamex)
+	- [`stringTag`](#stringtagnamex)
+
 - [Type combiners](#type-combiners)
+
 	- [`not`](#notfx)
 	- [`exclude`](#excludef-gx)
 	- [`or / sum / union`](#orfsx)
@@ -31,9 +38,11 @@ The following list presents the available methods and the assertion if the predi
 	- [`either`](#eitherf-gx)
 	- [`maybe / optional`](#maybefx)
 	- [`refinement`](#refinementf-gx)
-	- [`Array`](#Arrayfx)
-	- [`Struct`](#Structstructx)
+	- [`Array`](#arrayfx)
+	- [`Struct`](#structstructx)
+
 - [Unsafe](#unsafe)
+
 	- [`own / as`](#owntypex)
 
 ## Always
