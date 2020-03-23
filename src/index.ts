@@ -9,7 +9,7 @@ import {
 	Predicate,
 	PredicatesToGuards,
 	Tuple,
-} from "./util";
+} from "../util";
 
 const T = () => true;
 const F = () => false;

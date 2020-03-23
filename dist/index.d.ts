@@ -1,4 +1,4 @@
-import { AnyConstructor, GuardedType, UnionToIntersection, GuardedStruct, ObjWithStrTag, AnyStruct, Predicate, PredicatesToGuards } from "./util";
+import { AnyConstructor, GuardedType, UnionToIntersection, GuardedStruct, ObjWithStrTag, AnyStruct, Predicate, PredicatesToGuards } from "../util";
 declare type NativeTypes = {
     string: string;
     number: number;
