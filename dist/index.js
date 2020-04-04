@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const T = () => true;
 const F = () => false;
 const always = {
-    /// ----- Always conditions ----- ////
+    /// ----- Always conditions ----- ///
     /** Always pass */
     any: T,
     /** Always pass */
@@ -14,7 +14,7 @@ const always = {
     F,
 };
 const primitives = {
-    /// ----- Primitives ----- ////
+    /// ----- Primitives ----- ///
     /** Check whether x is null or undefined */
     nil: (x) => x == null,
     /** Check whether x is null */
@@ -61,7 +61,7 @@ const runtime = {
     },
 };
 const combiners = {
-    /// ----- Combiners ----- ////
+    /// ----- Combiners ----- ///
     /** Checks whether x does not satisfy the predicate
      * WARNING: Type guards will fail with not. Negated types are not supported in TS!
      * See: Negated types https://github.com/Microsoft/TypeScript/pull/29317 */
@@ -136,8 +136,13 @@ const combiners = {
         }
     },
 };
+const object = {
+    /// ----- Object ----- ///
+    /** Check whether object has property; object must be clearly typed ahead of time */
+    has: (o) => (x) => o.hasOwnProperty(x),
+};
 const aliases = {
-    /// ----- Aliases ----- ////
+    /// ----- Aliases ----- ///
     /** Check whether x satisfies at least one of the predicates */
     sum: combiners.or,
     /** Check whether x satisfies at least one of the predicates */
@@ -153,6 +158,7 @@ exports.default = {
     ...runtime,
     ...combiners,
     ...aliases,
+    ...object,
 };
 const unsafeBase = {
     /** Pass a type parameter and runtype will trust the type you think x is */

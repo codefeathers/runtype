@@ -15,7 +15,7 @@ const T = () => true;
 const F = () => false;
 
 const always = {
-	/// ----- Always conditions ----- ////
+	/// ----- Always conditions ----- ///
 
 	/** Always pass */
 	any: T,
@@ -31,7 +31,7 @@ const always = {
 };
 
 const primitives = {
-	/// ----- Primitives ----- ////
+	/// ----- Primitives ----- ///
 
 	/** Check whether x is null or undefined */
 	nil: (x: any): x is Nil => x == null,
@@ -113,7 +113,7 @@ const runtime = {
 };
 
 const combiners = {
-	/// ----- Combiners ----- ////
+	/// ----- Combiners ----- ///
 
 	/** Checks whether x does not satisfy the predicate
 	 * WARNING: Type guards will fail with not. Negated types are not supported in TS!
@@ -227,8 +227,14 @@ const combiners = {
 	},
 };
 
+const object = {
+	/// ----- Object ----- ///
+	/** Check whether object has property; object must be clearly typed ahead of time */
+	has: <O extends { [k: string]: any }>(o: O) => (x: any): x is keyof O => o.hasOwnProperty(x),
+};
+
 const aliases = {
-	/// ----- Aliases ----- ////
+	/// ----- Aliases ----- ///
 
 	/** Check whether x satisfies at least one of the predicates */
 	sum: combiners.or,
@@ -249,6 +255,7 @@ export default {
 	...runtime,
 	...combiners,
 	...aliases,
+	...object,
 };
 
 const unsafeBase = {

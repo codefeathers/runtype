@@ -18,6 +18,10 @@ interface literal {
 }
 declare const literal: literal;
 declare const _default: {
+    /** Check whether object has property; object must be clearly typed ahead of time */
+    has: <O extends {
+        [k: string]: any;
+    }>(o: O) => (x: any) => x is keyof O;
     /** Check whether x satisfies at least one of the predicates */
     sum: <Predicates extends Predicate[], GuardUnion extends PredicatesToGuards<Predicates>[number]>(fs: Predicates) => (x: any) => x is GuardUnion;
     /** Check whether x satisfies at least one of the predicates */
