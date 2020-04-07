@@ -1,7 +1,8 @@
 {
 	"name": "@codefeathers/runtype",
-	"version": "0.6.2",
+	"version": "0.7.0",
 	"main": "dist",
+	"types": "dist/index.d.ts",
 	"description": "Runtime type assertions that return",
 	"author": "Muthu Kumar <@MKRhere> (https://mkr.pw)",
 	"license": "MIT",
