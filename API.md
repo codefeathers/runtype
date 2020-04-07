@@ -2,9 +2,10 @@
 
 `runtype` exports type predicates—functions that take a value and validate it as a type.
 
-The following list presents the available methods and the assertion if the predicate returns true:
+The following list presents the available predicate methods. Note that several type utils are also exposed that might prove useful (like `GuardedType`, to extract the type that a predicate guards) to you. These are not documented below, but can be imported from `@codefeathers/runtype/util`, and have TSDoc accompanying them.
 
 # Table of contents
+
 - [Always](#always)
 
 	- [`T / any / ignore`](#tx)
