@@ -73,15 +73,17 @@ type NativeTypes = {
 	bigint: bigint;
 };
 
-interface literal {
+interface Literal {
 	<T extends string>(y: T): (x: any) => x is T;
 	<T extends number>(y: T): (x: any) => x is T;
 	<T extends boolean>(y: T): (x: any) => x is T;
 	<T extends object>(y: T): (x: any) => x is T;
+	<T extends bigint>(y: T): (x: any) => x is T;
 }
 
-const literal: literal = <T extends string | number | boolean | object>(y: T) => (x: any): x is T =>
-	x === y;
+type LiteralTypes = string | number | boolean | object | bigint;
+
+const literal: Literal = <T extends LiteralTypes>(y: T) => (x: any): x is T => x === y;
 
 const runtime = {
 	/// ----- Runtime type related ----- ////
@@ -161,6 +163,14 @@ const combiners = {
 		x: any,
 	): x is GuardedType<T | U> => !!(f && g) && (f(x) || g(x)),
 
+	/** Check whether x satisfies predicate, or is nil */
+	maybe: <T extends Predicate>(f: T) => (x: any): x is GuardedType<T> | Nil =>
+		combiners.either(f, primitives.nil)(x),
+
+	/** check whether x satisfies one of the given literal types */
+	oneOf: <Y extends LiteralTypes, Ys extends Y[]>(ys: Y[]) => (x: any): x is Ys[number] =>
+		ys.some(y => y === x),
+
 	/** Check whether x is a product type defined by fs */
 	product: <
 		// Predicates extends readonly Predicate[],
@@ -191,10 +201,6 @@ const combiners = {
 			return false;
 		}
 	},
-
-	/** Check whether x satisfies predicate, or is nil */
-	maybe: <T extends Predicate>(f: T) => (x: any): x is GuardedType<T> | Nil =>
-		combiners.either(f, primitives.nil)(x),
 
 	/// ----- Array and Struct ----- ////
 

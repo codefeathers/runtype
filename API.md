@@ -37,6 +37,7 @@ The following list presents the available predicate methods. Note that several t
 	- [`refinement`](#refinementf-gx)
 	- [`or / sum / union`](#orfsx)
 	- [`either`](#eitherf-gx)
+	- [`oneOf`](#oneofysx)
 	- [`product / tuple`](#productfsx)
 	- [`maybe / optional`](#maybefx)
 	- [`Array`](#arrayfx)
@@ -86,7 +87,7 @@ The following list presents the available predicate methods. Note that several t
 
 #### **`literal(<LITERAL>)(x)`**:
 ##### aliases: **`equals(x)`**
-- [where] `<LITERAL>` is a valid string, number, boolean, or object
+- [where] `<LITERAL>` is a valid string, number, bigint, boolean, or object
 - [asserts] `x` is equal to `<LITERAL>`
 
 #### **`is(<X>)(x)`**:
@@ -129,15 +130,19 @@ The following list presents the available predicate methods. Note that several t
 - [where] `<f>` and `<g>` are Predicates
 - [asserts] `x` satisfies either of the types represented by `<f>` or `<g>`
 
-#### **`product(<fs>)(x)`**:
-##### aliases: **`tuple(<fs>)(x)`**
-- [where] `<fs>` is a tuple of Predicates
-- [asserts] `x` is a tuple whose members are represented by the types in `<fs>` in order
-
 #### **`maybe(<f>)(x)`**:
 ##### aliases: **`optional(<f>)(x)`**
 - [where] `<f>` is a Predicate
 - [asserts] `x` either satisfies the type represented by `<f>`, or is `undefined | null`
+
+#### **`oneOf(<ys>)(x)`**:
+- [where] `<ys>` is an array of literals (string, number, bigint, boolean, or object)
+- [asserts] `x` is exactly equal one of the given literals
+
+#### **`product(<fs>)(x)`**:
+##### aliases: **`tuple(<fs>)(x)`**
+- [where] `<fs>` is a tuple of Predicates
+- [asserts] `x` is a tuple whose members are represented by the types in `<fs>` in order
 
 #### **`Array(<f>)(xs)`**:
 - [where] `<f>` is a Predicate
