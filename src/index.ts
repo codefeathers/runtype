@@ -129,6 +129,22 @@ const combiners = {
 		x: any,
 	): x is Exclude<GuardedType<T>, GuardedType<U>> => f(x) && !g(x),
 
+	/** Check whether x satisfies all predicates */
+	and: <Predicates extends Predicate[], GuardUnion extends PredicatesToGuards<Predicates>[number]>(
+		fs: Predicates,
+	) => (x: any): x is UnionToIntersection<GuardUnion> => {
+		try {
+			return fs.reduce((last, f) => last && f(x), true as boolean);
+		} catch {
+			return false;
+		}
+	},
+
+	/** Check whether x satisfies a base type and a refinement */
+	refinement: <T extends Predicate, U extends Predicate>(f: T, g: U) => (
+		x: any,
+	): x is GuardedType<T> & GuardedType<U> => combiners.and([f, g])(x),
+
 	/** Check whether x satisfies at least one of the predicates */
 	or: <Predicates extends Predicate[], GuardUnion extends PredicatesToGuards<Predicates>[number]>(
 		fs: Predicates,
@@ -140,16 +156,10 @@ const combiners = {
 		}
 	},
 
-	/** Check whether x satisfies all predicates */
-	and: <Predicates extends Predicate[], GuardUnion extends PredicatesToGuards<Predicates>[number]>(
-		fs: Predicates,
-	) => (x: any): x is UnionToIntersection<GuardUnion> => {
-		try {
-			return fs.reduce((last, f) => last && f(x), true as boolean);
-		} catch {
-			return false;
-		}
-	},
+	/** Check whether x satisfies either of two types */
+	either: <T extends Predicate, U extends Predicate>(f: T, g: U) => (
+		x: any,
+	): x is GuardedType<T | U> => !!(f && g) && (f(x) || g(x)),
 
 	/** Check whether x is a product type defined by fs */
 	product: <
@@ -182,19 +192,9 @@ const combiners = {
 		}
 	},
 
-	/** Check whether x satisfies either of two types */
-	either: <T extends Predicate, U extends Predicate>(f: T, g: U) => (
-		x: any,
-	): x is GuardedType<T | U> => !!(f && g) && (f(x) || g(x)),
-
 	/** Check whether x satisfies predicate, or is nil */
 	maybe: <T extends Predicate>(f: T) => (x: any): x is GuardedType<T> | Nil =>
 		combiners.either(f, primitives.nil)(x),
-
-	/** Check whether x satisfies a base type and a refinement */
-	refinement: <T extends Predicate, U extends Predicate>(f: T, g: U) => (
-		x: any,
-	): x is GuardedType<T> & GuardedType<U> => combiners.and([f, g])(x),
 
 	/// ----- Array and Struct ----- ////
 
