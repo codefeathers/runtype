@@ -11,8 +11,8 @@ import {
 	Tuple,
 } from "../util";
 
-const T = () => true;
-const F = () => false;
+const T = <U>(x: U): x is U => true;
+const F = (x: any): x is never => false;
 
 const always = {
 	/// ----- Always conditions ----- ///
@@ -28,6 +28,9 @@ const always = {
 
 	/** Always fail */
 	F,
+
+	/** Always fail */
+	fail: F,
 };
 
 const primitives = {

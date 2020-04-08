@@ -79,13 +79,15 @@ declare const _default: {
     /** Check whether x is an object */
     object: (x: any) => x is object;
     /** Always pass */
-    any: () => boolean;
+    any: <U_3>(x: U_3) => x is U_3;
     /** Always pass */
-    ignore: () => boolean;
+    ignore: <U_3>(x: U_3) => x is U_3;
     /** Always pass */
-    T: () => boolean;
+    T: <U_3>(x: U_3) => x is U_3;
     /** Always fail */
-    F: () => boolean;
+    F: (x: any) => x is never;
+    /** Always fail */
+    fail: (x: any) => x is never;
 };
 export default _default;
 export declare const unsafe: {

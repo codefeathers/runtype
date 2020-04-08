@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const T = () => true;
-const F = () => false;
+const T = (x) => true;
+const F = (x) => false;
 const always = {
     /// ----- Always conditions ----- ///
     /** Always pass */
@@ -12,6 +12,8 @@ const always = {
     T,
     /** Always fail */
     F,
+    /** Always fail */
+    fail: F,
 };
 const primitives = {
     /// ----- Primitives ----- ///

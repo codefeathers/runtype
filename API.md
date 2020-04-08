@@ -9,7 +9,7 @@ The following list presents the available predicate methods. Note that several t
 - [Always](#always)
 
 	- [`T / any / ignore`](#tx)
-	- [`F`](#fx)
+	- [`F / fail`](#fx)
 
 - [Primitives](#primitives)
 
@@ -50,10 +50,11 @@ The following list presents the available predicate methods. Note that several t
 
 #### **`T(x)`**:
 ##### aliases: **`any(x)`**, **`ignore(x)`**
-- [asserts] `x` is ignored, always returns true
+- [asserts] type of `x` is accepted as is
 
 #### **`F(x)`**:
-- [asserts] `x` is ignored, always returns false
+##### aliases: **`fail(x)`**
+- [asserts] `x` is never
 
 ## Primitives
 
