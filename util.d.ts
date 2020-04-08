@@ -61,10 +61,12 @@ export type Defined<T> = {
 	[K in ExcludePropType<T, undefined>]: T[K];
 };
 
+type Id<T> = {} & { [P in keyof T]: T[P] };
+
 /**
  * Make props that can be undefined optional
  */
-export type UndefinedOptional<T> = Defined<T> & Partial<Undefinables<T>>;
+export type UndefinedOptional<T> = Id<Defined<T> & Partial<Undefinables<T>>>;
 
 /**
  * Take an object of predicates and return

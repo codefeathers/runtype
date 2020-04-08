@@ -71,15 +71,6 @@ const combiners = {
     //TODO: Negated type
     /** Exclude type represented by g from type represented by f */
     exclude: (f, g) => (x) => f(x) && !g(x),
-    /** Check whether x satisfies at least one of the predicates */
-    or: (fs) => (x) => {
-        try {
-            return fs.reduce((last, f) => last || f(x), false);
-        }
-        catch {
-            return false;
-        }
-    },
     /** Check whether x satisfies all predicates */
     and: (fs) => (x) => {
         try {
@@ -89,6 +80,23 @@ const combiners = {
             return false;
         }
     },
+    /** Check whether x satisfies a base type and a refinement */
+    refinement: (f, g) => (x) => combiners.and([f, g])(x),
+    /** Check whether x satisfies at least one of the predicates */
+    or: (fs) => (x) => {
+        try {
+            return fs.reduce((last, f) => last || f(x), false);
+        }
+        catch {
+            return false;
+        }
+    },
+    /** Check whether x satisfies either of two types */
+    either: (f, g) => (x) => !!(f && g) && (f(x) || g(x)),
+    /** Check whether x satisfies predicate, or is nil */
+    maybe: (f) => (x) => combiners.either(f, primitives.nil)(x),
+    /** check whether x satisfies one of the given literal types */
+    oneOf: (ys) => (x) => ys.some(y => y === x),
     /** Check whether x is a product type defined by fs */
     product: (fs) => (xs) => {
         //TODO: variadic, type-guard is limited from 2 to 15 Predicates
@@ -99,12 +107,6 @@ const combiners = {
             return false;
         }
     },
-    /** Check whether x satisfies either of two types */
-    either: (f, g) => (x) => !!(f && g) && (f(x) || g(x)),
-    /** Check whether x satisfies predicate, or is nil */
-    maybe: (f) => (x) => combiners.either(f, primitives.nil)(x),
-    /** Check whether x satisfies a base type and a refinement */
-    refinement: (f, g) => (x) => combiners.and([f, g])(x),
     /// ----- Array and Struct ----- ////
     /** Check whether all elements of x satisfy predicate */
     Array: (f) => (xs) => {

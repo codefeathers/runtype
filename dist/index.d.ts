@@ -10,13 +10,14 @@ declare type NativeTypes = {
     symbol: symbol;
     bigint: bigint;
 };
-interface literal {
+interface Literal {
     <T extends string>(y: T): (x: any) => x is T;
     <T extends number>(y: T): (x: any) => x is T;
     <T extends boolean>(y: T): (x: any) => x is T;
     <T extends object>(y: T): (x: any) => x is T;
+    <T extends bigint>(y: T): (x: any) => x is T;
 }
-declare const literal: literal;
+declare type LiteralTypes = string | number | boolean | object | bigint;
 declare const _default: {
     /** Check whether object has property; object must be clearly typed ahead of time */
     has: <O extends {
@@ -36,26 +37,28 @@ declare const _default: {
     not: <T_1 extends Predicate>(f: T_1) => (x: any) => x is Exclude<any, GuardedType<T_1>>;
     /** Exclude type represented by g from type represented by f */
     exclude: <T_2 extends Predicate, U extends Predicate>(f: T_2, g: U) => (x: any) => x is Exclude<GuardedType<T_2>, GuardedType<U>>;
-    /** Check whether x satisfies at least one of the predicates */
-    or: <Predicates extends Predicate[], GuardUnion extends PredicatesToGuards<Predicates>[number]>(fs: Predicates) => (x: any) => x is GuardUnion;
     /** Check whether x satisfies all predicates */
     and: <Predicates_2 extends Predicate[], GuardUnion_1 extends PredicatesToGuards<Predicates_2>[number]>(fs: Predicates_2) => (x: any) => x is UnionToIntersection<GuardUnion_1>;
-    /** Check whether x is a product type defined by fs */
-    product: <Predicates_1 extends [Predicate] | [Predicate, Predicate] | [Predicate, Predicate, Predicate] | [Predicate, Predicate, Predicate, Predicate] | [Predicate, Predicate, Predicate, Predicate, Predicate] | [Predicate, Predicate, Predicate, Predicate, Predicate, Predicate] | [Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate] | [Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate] | [Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate] | [Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate] | [Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate] | [Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate] | [Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate] | [Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate] | [Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate], GuardTuple extends PredicatesToGuards<Predicates_1>>(fs: Predicates_1) => (xs: any) => xs is GuardTuple;
+    /** Check whether x satisfies a base type and a refinement */
+    refinement: <T_3 extends Predicate, U_1 extends Predicate>(f: T_3, g: U_1) => (x: any) => x is GuardedType<T_3> & GuardedType<U_1>;
+    /** Check whether x satisfies at least one of the predicates */
+    or: <Predicates extends Predicate[], GuardUnion extends PredicatesToGuards<Predicates>[number]>(fs: Predicates) => (x: any) => x is GuardUnion;
     /** Check whether x satisfies either of two types */
-    either: <T_3 extends Predicate, U_1 extends Predicate>(f: T_3, g: U_1) => (x: any) => x is GuardedType<T_3> | GuardedType<U_1>;
+    either: <T_4 extends Predicate, U_2 extends Predicate>(f: T_4, g: U_2) => (x: any) => x is GuardedType<T_4> | GuardedType<U_2>;
     /** Check whether x satisfies predicate, or is nil */
     maybe: <T extends Predicate>(f: T) => (x: any) => x is GuardedType<T> | null | undefined;
-    /** Check whether x satisfies a base type and a refinement */
-    refinement: <T_4 extends Predicate, U_2 extends Predicate>(f: T_4, g: U_2) => (x: any) => x is GuardedType<T_4> & GuardedType<U_2>;
+    /** check whether x satisfies one of the given literal types */
+    oneOf: <Y extends LiteralTypes, Ys extends Y[]>(ys: Y[]) => (x: any) => x is Ys[number];
+    /** Check whether x is a product type defined by fs */
+    product: <Predicates_1 extends [Predicate] | [Predicate, Predicate] | [Predicate, Predicate, Predicate] | [Predicate, Predicate, Predicate, Predicate] | [Predicate, Predicate, Predicate, Predicate, Predicate] | [Predicate, Predicate, Predicate, Predicate, Predicate, Predicate] | [Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate] | [Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate] | [Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate] | [Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate] | [Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate] | [Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate] | [Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate] | [Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate] | [Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate], GuardTuple extends PredicatesToGuards<Predicates_1>>(fs: Predicates_1) => (xs: any) => xs is GuardTuple;
     /** Check whether all elements of x satisfy predicate */
     Array: <T_5 extends Predicate>(f: T_5) => (xs: any[]) => xs is GuardedType<T_5>[];
     /** Check the structure of an object to match a given predicate */
     Struct: <Struct extends AnyStruct>(struct: Struct) => (x: any) => x is GuardedStruct<Struct>;
     /** Literal equality of string, number, boolean, or object */
-    literal: literal;
+    literal: Literal;
     /** Literal equality of string, number, boolean, or object */
-    equals: literal;
+    equals: Literal;
     /** Check whether x is an instanceof X */
     is: <T_6 extends AnyConstructor>(X: T_6) => (x: any) => x is InstanceType<T_6>;
     /** Check whether x is of type `name`, which is a possible typeof string, or "null" */
