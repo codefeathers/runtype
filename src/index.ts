@@ -9,6 +9,7 @@ import {
 	Predicate,
 	PredicatesToGuards,
 	Tuple,
+	CreateStructGuard,
 } from "../util";
 
 const T = <U>(x: U): x is U => true;
@@ -238,6 +239,17 @@ const combiners = {
 
 const object = {
 	/// ----- Object ----- ///
+
+	Extends: <
+		T extends Predicate,
+		Struct extends Partial<CreateStructGuard<GuardedType<T>>> & AnyStruct
+	>(
+		f: T,
+		struct: Struct,
+	) => <X extends GuardedType<T>>(x: X): x is X & GuardedStruct<Struct> => {
+		return f(x) && combiners.Struct(struct)(x);
+	},
+
 	/** Check whether object has property; object must be clearly typed ahead of time */
 	has: <O extends { [k: string]: any }>(o: O) => (x: any): x is keyof O => o.hasOwnProperty(x),
 };

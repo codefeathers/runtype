@@ -9,9 +9,14 @@ export type Nil = null | undefined;
 export type AnyConstructor = new (...args: any) => any;
 
 /**
- * A generic Predicate type
+ * A base Predicate type
  */
 export type Predicate = (x: any) => boolean;
+
+/**
+ * A known (generic) Predicate type
+ */
+export type KnownPredicate<T = any> = (x: T) => x is T;
 
 /**
  * A generic Struct interface
@@ -31,7 +36,13 @@ export type ObjWithStrTag<U extends string> = {
  * Extract the guarded type from a type guard
  */
 export type GuardedType<T> = T extends (x: any) => x is infer T ? T : never;
+
+/**
+ *
+ */
 export type PredicatesToGuards<T> = { [K in keyof T]: GuardedType<T[K]> };
+
+export type GuardStruct<T> = { [K in keyof T]: (x: any) => x is T[K] };
 
 /**
  * Get props that can be assigned U
@@ -79,6 +90,21 @@ export type GuardedStruct<Struct> = Struct extends (...x: any[]) => any
 				[K in keyof Struct]: GuardedStruct<Struct[K]>;
 			}
 	  >;
+
+type UniPred<T> = T extends {}
+	?
+			| ((x: any) => x is T)
+			| ((x: any) => x is Partial<T> & object)
+			| (Partial<CreateStructGuard<T>> & AnyStruct)
+	: (x: any) => x is T;
+
+/**
+ * Take an object of types and return
+ * an object of corresponding type guards
+ */
+export type CreateStructGuard<T> = {} & {
+	[K in keyof T]: UniPred<T[K]>;
+};
 
 /**
  * Add a member to the start of a tuple
