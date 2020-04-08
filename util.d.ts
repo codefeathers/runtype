@@ -14,11 +14,6 @@ export type AnyConstructor = new (...args: any) => any;
 export type Predicate = (x: any) => boolean;
 
 /**
- * A known (generic) Predicate type
- */
-export type KnownPredicate<T = any> = (x: T) => x is T;
-
-/**
  * A generic Struct interface
  */
 export type AnyStruct = {
@@ -41,8 +36,6 @@ export type GuardedType<T> = T extends (x: any) => x is infer T ? T : never;
  *
  */
 export type PredicatesToGuards<T> = { [K in keyof T]: GuardedType<T[K]> };
-
-export type GuardStruct<T> = { [K in keyof T]: (x: any) => x is T[K] };
 
 /**
  * Get props that can be assigned U

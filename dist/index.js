@@ -142,6 +142,9 @@ const combiners = {
 };
 const object = {
     /// ----- Object ----- ///
+    Extends: (f, struct) => (x) => {
+        return f(x) && combiners.Struct(struct)(x);
+    },
     /** Check whether object has property; object must be clearly typed ahead of time */
     has: (o) => (x) => o.hasOwnProperty(x),
 };
