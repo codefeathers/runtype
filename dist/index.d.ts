@@ -30,29 +30,29 @@ declare const _default: {
     /** Check whether x is a tuple of type defined by fs */
     tuple: <Predicates_1 extends [Predicate] | [Predicate, Predicate] | [Predicate, Predicate, Predicate] | [Predicate, Predicate, Predicate, Predicate] | [Predicate, Predicate, Predicate, Predicate, Predicate] | [Predicate, Predicate, Predicate, Predicate, Predicate, Predicate] | [Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate] | [Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate] | [Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate] | [Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate] | [Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate] | [Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate] | [Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate] | [Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate] | [Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate], GuardTuple extends PredicatesToGuards<Predicates_1>>(fs: Predicates_1) => (xs: any) => xs is GuardTuple;
     /** Check whether x satisfies predicate, or is nil */
-    optional: <T extends Predicate>(f: T) => (x: any) => x is GuardedType<T> | null | undefined;
+    optional: <T extends Predicate>(f: T) => (x: any) => x is GuardedType<T, unknown> | null | undefined;
     /** Checks whether x does not satisfy the predicate
      * WARNING: Type guards will fail with not. Negated types are not supported in TS!
      * See: Negated types https://github.com/Microsoft/TypeScript/pull/29317 */
-    not: <T_1 extends Predicate>(f: T_1) => (x: any) => x is Exclude<any, GuardedType<T_1>>;
+    not: <T_1 extends Predicate>(f: T_1) => (x: any) => x is Exclude<any, GuardedType<T_1, unknown>>;
     /** Exclude type represented by g from type represented by f */
-    exclude: <T_2 extends Predicate, U extends Predicate>(f: T_2, g: U) => (x: any) => x is Exclude<GuardedType<T_2>, GuardedType<U>>;
+    exclude: <T_2 extends Predicate, U extends Predicate>(f: T_2, g: U) => (x: any) => x is Exclude<GuardedType<T_2, unknown>, GuardedType<U, unknown>>;
     /** Check whether x satisfies all predicates */
     and: <Predicates_2 extends Predicate[], GuardUnion_1 extends PredicatesToGuards<Predicates_2>[number]>(fs: Predicates_2) => (x: any) => x is UnionToIntersection<GuardUnion_1>;
     /** Check whether x satisfies a base type and a refinement */
-    refinement: <T_3 extends Predicate, U_1 extends Predicate>(f: T_3, g: U_1) => (x: any) => x is GuardedType<T_3> & GuardedType<U_1>;
+    refinement: <T_3 extends Predicate, U_1 extends Predicate>(f: T_3, g: U_1) => (x: any) => x is GuardedType<T_3, unknown> & GuardedType<U_1, unknown>;
     /** Check whether x satisfies at least one of the predicates */
     or: <Predicates extends Predicate[], GuardUnion extends PredicatesToGuards<Predicates>[number]>(fs: Predicates) => (x: any) => x is GuardUnion;
     /** Check whether x satisfies either of two types */
-    either: <T_4 extends Predicate, U_2 extends Predicate>(f: T_4, g: U_2) => (x: any) => x is GuardedType<T_4> | GuardedType<U_2>;
+    either: <T_4 extends Predicate, U_2 extends Predicate>(f: T_4, g: U_2) => (x: any) => x is GuardedType<T_4, unknown> | GuardedType<U_2, unknown>;
     /** Check whether x satisfies predicate, or is nil */
-    maybe: <T extends Predicate>(f: T) => (x: any) => x is GuardedType<T> | null | undefined;
+    maybe: <T extends Predicate>(f: T) => (x: any) => x is GuardedType<T, unknown> | null | undefined;
     /** check whether x satisfies one of the given literal types */
     oneOf: <Y extends LiteralTypes, Ys extends Y[]>(ys: Y[]) => (x: any) => x is Ys[number];
     /** Check whether x is a product type defined by fs */
     product: <Predicates_1 extends [Predicate] | [Predicate, Predicate] | [Predicate, Predicate, Predicate] | [Predicate, Predicate, Predicate, Predicate] | [Predicate, Predicate, Predicate, Predicate, Predicate] | [Predicate, Predicate, Predicate, Predicate, Predicate, Predicate] | [Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate] | [Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate] | [Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate] | [Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate] | [Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate] | [Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate] | [Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate] | [Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate] | [Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate, Predicate], GuardTuple extends PredicatesToGuards<Predicates_1>>(fs: Predicates_1) => (xs: any) => xs is GuardTuple;
     /** Check whether all elements of x satisfy predicate */
-    Array: <T_5 extends Predicate>(f: T_5) => (xs: any[]) => xs is GuardedType<T_5>[];
+    Array: <T_5 extends Predicate>(f: T_5) => (xs: any[]) => xs is GuardedType<T_5, unknown>[];
     /** Check the structure of an object to match a given predicate */
     Struct: <Struct extends AnyStruct>(struct: Struct) => (x: any) => x is GuardedStruct<Struct>;
     /** Literal equality of string, number, boolean, or object */

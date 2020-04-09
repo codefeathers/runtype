@@ -30,7 +30,7 @@ export type ObjWithStrTag<U extends string> = {
 /**
  * Extract the guarded type from a type guard
  */
-export type GuardedType<T> = T extends (x: any) => x is infer T ? T : never;
+export type GuardedType<T, Default = unknown> = T extends (x: any) => x is infer T ? T : Default;
 export type PredicatesToGuards<T> = { [K in keyof T]: GuardedType<T[K]> };
 
 /**
