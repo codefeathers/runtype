@@ -93,8 +93,12 @@ const combiners = {
     },
     /** Check whether x satisfies either of two types */
     either: (f, g) => (x) => !!(f && g) && (f(x) || g(x)),
+    /** Check whether x satisfies predicate, or is undefined */
+    maybe: (f) => (x) => combiners.either(f, primitives.undefined)(x),
+    /** Check whether x satisfies predicate, or is null */
+    nullable: (f) => (x) => combiners.either(f, primitives.null)(x),
     /** Check whether x satisfies predicate, or is nil */
-    maybe: (f) => (x) => combiners.either(f, primitives.nil)(x),
+    nilable: (f) => (x) => combiners.either(f, primitives.nil)(x),
     /** check whether x satisfies one of the given literal types */
     oneOf: (ys) => (x) => ys.some(y => y === x),
     /** Check whether x is a product type defined by fs */
