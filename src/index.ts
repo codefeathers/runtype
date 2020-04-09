@@ -241,7 +241,7 @@ const object = {
 
 	/**
 	 * Takes a Predicate and Struct, x is validated against the predicate's
-	 * type at compile time, and validated against both in runtime
+	 * type at compile time, and validated against both at runtime
 	 *
 	 * Similar to refinement, but with a compile-time check
 	 * and bare object as second param

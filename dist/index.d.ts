@@ -19,7 +19,14 @@ interface Literal {
 }
 declare type LiteralTypes = string | number | boolean | object | bigint;
 declare const _default: {
-    Extends: <T extends Predicate, Struct extends Partial<{ [K in keyof GuardedType<T>]: import("../util").UniPred<GuardedType<T>[K]>; }> & AnyStruct>(f: T, struct: Struct) => <X extends GuardedType<T>>(x: X) => x is X & GuardedStruct<Struct>;
+    /**
+     * Takes a Predicate and Struct, x is validated against the predicate's
+     * type at compile time, and validated against both at runtime
+     *
+     * Similar to refinement, but with a compile-time check
+     * and bare object as second param
+     */
+    Extends: <T extends Predicate, Struct extends Partial<{ [K in keyof GuardedType<T>]: import("../util").StructGuardValue<GuardedType<T>[K]>; }> & AnyStruct>(f: T, struct: Struct) => <X extends GuardedType<T>>(x: X) => x is X & GuardedStruct<Struct>;
     /** Check whether object has property; object must be clearly typed ahead of time */
     has: <O extends {
         [k: string]: any;
