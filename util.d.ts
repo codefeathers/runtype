@@ -33,7 +33,7 @@ export type ObjWithStrTag<U extends string> = {
 export type GuardedType<T> = T extends (x: any) => x is infer T ? T : never;
 
 /**
- *
+ * Map a type of predicates to the guarded types represented by them
  */
 export type PredicatesToGuards<T> = { [K in keyof T]: GuardedType<T[K]> };
 
@@ -65,12 +65,15 @@ export type Defined<T> = {
 	[K in ExcludePropType<T, undefined>]: T[K];
 };
 
-type Id<T> = {} & { [P in keyof T]: T[P] };
+/**
+ * A trick to unroll complex computed types and reveal the resolved type
+ */
+export type MappedId<T> = {} & { [P in keyof T]: T[P] };
 
 /**
  * Make props that can be undefined optional
  */
-export type UndefinedOptional<T> = Id<Defined<T> & Partial<Undefinables<T>>>;
+export type UndefinedOptional<T> = MappedId<Defined<T> & Partial<Undefinables<T>>>;
 
 /**
  * Take an object of predicates and return
@@ -84,11 +87,13 @@ export type GuardedStruct<Struct> = Struct extends (...x: any[]) => any
 			}
 	  >;
 
-type UniPred<T> = T extends {}
+// Undocumented and unexported because doesn't seem useful
+// outside of CreateStructGuard
+type StructGuardValue<T> = T extends {}
 	?
-			| ((x: any) => x is T)
-			| ((x: any) => x is Partial<T> & object)
-			| (Partial<CreateStructGuard<T>> & AnyStruct)
+			| ((x: any) => x is T) // value can be a predicate guarding T
+			| ((x: any) => x is Partial<T> & object) // value can be a predicate guarding a few props of T and props not in T (extends)
+			| (Partial<CreateStructGuard<T>> & AnyStruct) // value can be an object literal with type guards for a few or all props of T and other predicate props
 	: (x: any) => x is T;
 
 /**
@@ -96,7 +101,7 @@ type UniPred<T> = T extends {}
  * an object of corresponding type guards
  */
 export type CreateStructGuard<T> = {} & {
-	[K in keyof T]: UniPred<T[K]>;
+	[K in keyof T]: StructGuardValue<T[K]>;
 };
 
 /**

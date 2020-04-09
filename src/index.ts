@@ -174,7 +174,6 @@ const combiners = {
 
 	/** Check whether x is a product type defined by fs */
 	product: <
-		// Predicates extends readonly Predicate[],
 		Predicates extends
 			| Tuple<Predicate, 1>
 			| Tuple<Predicate, 2>
@@ -195,7 +194,7 @@ const combiners = {
 	>(
 		fs: Predicates,
 	) => (xs: any): xs is GuardTuple => {
-		//TODO: variadic, type-guard is limited from 2 to 15 Predicates
+		//TODO: variadic, type-guard is limited from 1 to 15 Predicates
 		try {
 			return fs.every((f, i) => f(xs[i]));
 		} catch {
@@ -240,6 +239,13 @@ const combiners = {
 const object = {
 	/// ----- Object ----- ///
 
+	/**
+	 * Takes a Predicate and Struct, x is validated against the predicate's
+	 * type at compile time, and validated against both in runtime
+	 *
+	 * Similar to refinement, but with a compile-time check
+	 * and bare object as second param
+	 */
 	Extends: <
 		T extends Predicate,
 		Struct extends Partial<CreateStructGuard<GuardedType<T>>> & AnyStruct
