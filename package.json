@@ -12,7 +12,8 @@
 	],
 	"scripts": {
 		"test": "ava",
-		"build": "rimraf dist && tsc"
+		"build": "rimraf dist && tsc",
+		"prepare": "npm run build"
 	},
 	"repository": {
 		"type": "git",
