@@ -6,8 +6,8 @@
 	"description": "Runtime type assertions that return",
 	"author": "Muthu Kumar <@MKRhere> (https://mkr.pw)",
 	"contributors": [
-		"Thomas Rory Gummerson <@TRGWII> (https://rory.no)",
-		"Wojciech Pawlik <@wojpawlik>"
+		"Thomas Rory Gummerson <thomas@gummerson.no> (https://trgwii.no)",
+		"Wojciech Pawlik <woj.pawlik@gmail.com>"
 	],
 	"license": "MIT",
 	"tags": [
