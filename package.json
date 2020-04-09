@@ -5,6 +5,10 @@
 	"types": "dist/index.d.ts",
 	"description": "Runtime type assertions that return",
 	"author": "Muthu Kumar <@MKRhere> (https://mkr.pw)",
+	"contributors": [
+		"Thomas Rory Gummerson <@TRGWII> (https://rory.no)",
+		"Wojciech Pawlik <@wojpawlik>"
+	],
 	"license": "MIT",
 	"tags": [
 		"assertion",
