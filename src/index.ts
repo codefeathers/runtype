@@ -163,8 +163,16 @@ const combiners = {
 		x: any,
 	): x is GuardedType<T | U> => !!(f && g) && (f(x) || g(x)),
 
+	/** Check whether x satisfies predicate, or is undefined */
+	maybe: <T extends Predicate>(f: T) => (x: any): x is GuardedType<T> | undefined =>
+		combiners.either(f, primitives.undefined)(x),
+
+	/** Check whether x satisfies predicate, or is null */
+	nullable: <T extends Predicate>(f: T) => (x: any): x is GuardedType<T> | null =>
+		combiners.either(f, primitives.null)(x),
+
 	/** Check whether x satisfies predicate, or is nil */
-	maybe: <T extends Predicate>(f: T) => (x: any): x is GuardedType<T> | Nil =>
+	nilable: <T extends Predicate>(f: T) => (x: any): x is GuardedType<T> | Nil =>
 		combiners.either(f, primitives.nil)(x),
 
 	/** check whether x satisfies one of the given literal types */

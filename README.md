@@ -13,7 +13,7 @@ Any throwing behaviour definitely qualifies as a bug. The absense of a type-guar
 **Installation:**
 
 ```bash
-npm i runtype
+npm i @codefeathers/runtype
 ```
 
 **Usage:**

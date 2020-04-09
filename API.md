@@ -40,6 +40,8 @@ The following list presents the available predicate methods. Note that several t
 	- [`oneOf`](#oneofysx)
 	- [`product / tuple`](#productfsx)
 	- [`maybe / optional`](#maybefx)
+	- [`nullable`](#nullablefx)
+	- [`nilable`](#nilablefx)
 	- [`Array`](#arrayfx)
 	- [`Struct`](#structstructx)
 
@@ -132,6 +134,14 @@ The following list presents the available predicate methods. Note that several t
 
 #### **`maybe(<f>)(x)`**:
 ##### aliases: **`optional(<f>)(x)`**
+- [where] `<f>` is a Predicate
+- [asserts] `x` either satisfies the type represented by `<f>`, or is `undefined`
+
+#### **`nullable(<f>)(x)`**:
+- [where] `<f>` is a Predicate
+- [asserts] `x` either satisfies the type represented by `<f>`, or is `null`
+
+#### **`nilable(<f>)(x)`**:
 - [where] `<f>` is a Predicate
 - [asserts] `x` either satisfies the type represented by `<f>`, or is `undefined | null`
 
