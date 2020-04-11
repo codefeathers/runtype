@@ -6,7 +6,7 @@ export type Nil = null | undefined;
 /**
  * Types that can be expressed as a literal
  */
-type LiteralTypes = string | number | boolean | object | bigint;
+type LiteralTypes = string | number | boolean | bigint;
 
 /**
  * All native types in JavaScript
