@@ -41,21 +41,15 @@ export type AnyStruct = {
 };
 
 /**
- * An object type with a given stringTag
- */
-export type ObjWithStrTag<U extends string> = {
-	[k in string | number | symbol]: any;
-} & { [Symbol.toStringTag]: U };
-
-/**
- * Extract the guarded type from a type guard
+ * Extract the guarded type from a type guard, defaults to never.
+ * Override default by passing a second type param.
  */
 export type GuardedType<T, Default = unknown> = T extends (x: any) => x is infer T ? T : Default;
 
 /**
  * Map a type of predicates to the guarded types represented by them
  */
-export type PredicatesToGuards<T> = { [K in keyof T]: GuardedType<T[K]> };
+export type PredicatesToGuards<T> = { [K in keyof T]: GuardedType<T[K], never> };
 
 /**
  * Get props that can be assigned U
@@ -100,7 +94,7 @@ export type UndefinedOptional<T> = MappedId<Defined<T> & Partial<Undefinables<T>
  * an object type containing the guarded types
  */
 export type GuardedStruct<Struct> = Struct extends (...x: any[]) => any
-	? GuardedType<Struct>
+	? GuardedType<Struct, never>
 	: UndefinedOptional<
 			{
 				[K in keyof Struct]: GuardedStruct<Struct[K]>;
