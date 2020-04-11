@@ -5,15 +5,30 @@
 	"types": "dist/index.d.ts",
 	"description": "Runtime type assertions that return",
 	"author": "Muthu Kumar <@MKRhere> (https://mkr.pw)",
+	"contributors": [
+		"Thomas Rory Gummerson <thomas@gummerson.no> (https://trgwii.no)",
+		"Wojciech Pawlik <woj.pawlik@gmail.com>"
+	],
 	"license": "MIT",
 	"tags": [
+		"runtime",
+		"types",
+		"validation",
 		"assertion",
 		"testing"
 	],
 	"scripts": {
 		"test": "ava",
-		"build": "rimraf dist && tsc"
+		"build": "rimraf dist && tsc",
+		"prepare": "npm run build"
 	},
+	"files": [
+		"dist/*",
+		"util.d.ts",
+		"package.json",
+		"README.md",
+		"tsconfig.json"
+	],
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/codefeathers/runtype.git"
