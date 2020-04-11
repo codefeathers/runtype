@@ -4,6 +4,26 @@
 export type Nil = null | undefined;
 
 /**
+ * Types that can be expressed as a literal
+ */
+type LiteralTypes = string | number | boolean | object | bigint;
+
+/**
+ * All native types in JavaScript
+ */
+type NativeTypes = {
+	string: string;
+	number: number;
+	boolean: boolean;
+	null: null;
+	undefined: undefined;
+	object: object;
+	function: Function;
+	symbol: symbol;
+	bigint: bigint;
+};
+
+/**
  * A generic Class or constructor
  */
 export type AnyConstructor = new (...args: any) => any;
