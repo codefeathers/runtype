@@ -43,7 +43,7 @@ export const and = <
 /** Check whether x satisfies a base type and a refinement */
 export const refinement = <T extends Predicate, U extends Predicate>(f: T, g: U) => (
 	x: any,
-): x is GuardedType<T> & GuardedType<U> => and([f, g])(x);
+): x is GuardedType<T> & GuardedType<U> => !!(f && g) && f(x) && g(x);
 
 /** Check whether x satisfies at least one of the predicates */
 export const or = <

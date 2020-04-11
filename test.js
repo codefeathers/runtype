@@ -1,6 +1,6 @@
 const test = require("ava");
 
-const r = require("./dist").default;
+const r = require("./dist");
 
 test("T", t => {
 	const res = r.T();
@@ -45,17 +45,17 @@ test("null", t => {
 	t.plan(3);
 	{
 		// undefined
-		const res = r.null();
+		const res = r.Null();
 		t.false(res);
 	}
 	{
 		// undefined, expicit
-		const res = r.null(undefined);
+		const res = r.Null(undefined);
 		t.false(res);
 	}
 	{
 		// null
-		const res = r.null(null);
+		const res = r.Null(null);
 		t.true(res);
 	}
 });
@@ -64,17 +64,17 @@ test("undefined", t => {
 	t.plan(3);
 	{
 		// undefined
-		const res = r.undefined();
+		const res = r.Undefined();
 		t.true(res);
 	}
 	{
 		// undefined, explicit
-		const res = r.undefined(undefined);
+		const res = r.Undefined(undefined);
 		t.true(res);
 	}
 	{
 		//explicit null
-		const res = r.undefined(null);
+		const res = r.Undefined(null);
 		t.false(res);
 	}
 });
@@ -363,11 +363,11 @@ test("struct", t => {
 	t.plan(2);
 	{
 		// with a valid struct
-		const res = r.Struct({
+		const res = r.struct({
 			x: r.string,
 			y: r.number,
 			z: {
-				a: r.Array(r.either(r.number, r.string)),
+				a: r.array(r.either(r.number, r.string)),
 			},
 		})({
 			x: "string",
@@ -381,11 +381,11 @@ test("struct", t => {
 	}
 	{
 		// with a valid struct
-		const res = r.Struct({
+		const res = r.struct({
 			x: r.number,
 			y: r.number,
 			z: {
-				a: r.Array(r.either(r.number, r.string)),
+				a: r.array(r.either(r.number, r.string)),
 			},
 		})({
 			x: "string",
