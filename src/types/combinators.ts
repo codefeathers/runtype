@@ -14,13 +14,6 @@ import {
 import { any } from "./always";
 import { Null, Undefined, nil } from "./primitives";
 
-/** Checks whether x does not satisfy the predicate.
- * WARNING! Type guards will fail with not. Negated types are not supported in TS!
- * See: Negated types https://github.com/Microsoft/TypeScript/pull/29317 */
-export const not = <T extends Predicate>(f: T) => (x: any): x is Exclude<any, GuardedType<T>> =>
-	!f(x);
-//TODO: Negated type
-
 /** Exclude type represented by g from type represented by f */
 export const exclude = <T extends Predicate, U extends Predicate>(f: T, g: U) => (
 	x: any,
@@ -43,7 +36,7 @@ export const and = <
 /** Check whether x satisfies a base type and a refinement */
 export const refinement = <T extends Predicate, U extends Predicate>(f: T, g: U) => (
 	x: any,
-): x is GuardedType<T> & GuardedType<U> => !!(f && g) && f(x) && g(x);
+): x is GuardedType<T, never> & GuardedType<U, never> => !!(f && g) && f(x) && g(x);
 
 /** Check whether x satisfies at least one of the predicates */
 export const or = <

@@ -1,15 +1,8 @@
-import { LiteralTypes, NativeTypes, AnyConstructor, ObjWithStrTag } from "../../util";
-
-export interface literal {
-	<T extends string>(y: T): (x: any) => x is T;
-	<T extends number>(y: T): (x: any) => x is T;
-	<T extends boolean>(y: T): (x: any) => x is T;
-	<T extends object>(y: T): (x: any) => x is T;
-	<T extends bigint>(y: T): (x: any) => x is T;
-}
+import { LiteralTypes, NativeTypes, AnyConstructor, Predicate, GuardedType } from "../../util";
+import { any } from "./always";
 
 /** Literal equality of string, number, boolean, or object */
-export const literal: literal = <T extends LiteralTypes>(y: T) => (x: any): x is T => x === y;
+export const literal = <T extends LiteralTypes>(y: T) => (x: any): x is T => x === y;
 
 /** Literal equality of string, number, boolean, or object */
 export const equals = literal;
@@ -27,15 +20,17 @@ export const is = <T extends AnyConstructor>(X: T) => (x: any): x is InstanceTyp
 export const type = <T extends keyof NativeTypes>(name: T) => (x: any): x is NativeTypes[T] =>
 	x === null ? name === "null" : typeof x === name;
 
-/** Check whether x has a [Symbol.toStringTag] value equal to `name` */
-export const stringTag = <T extends string>(name: T) => (x: any): x is ObjWithStrTag<T> => {
+/**
+ * Check whether x has key and its value matches the type represented by pred.
+ * pred defaults to `any`.
+ */
+export const has = <T extends string | number, Pred extends Predicate>(
+	key: T,
+	pred: Pred = any as any,
+) => (x: any): x is Record<T, GuardedType<Pred>> => {
 	try {
-		return x[Symbol.toStringTag] === name;
+		return x.hasOwnProperty(key) && pred((x as any)[key]);
 	} catch {
 		return false;
 	}
 };
-
-/** Check whether object has property; object must be clearly typed ahead of time */
-export const has = <O extends { [k: string]: any }>(o: O) => (x: any): x is keyof O =>
-	o.hasOwnProperty(x);
