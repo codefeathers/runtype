@@ -11,8 +11,8 @@ import {
 	CreateStructGuard,
 } from "../../util";
 
-import * as always from "./always";
-import * as primitives from "./primitives";
+import { any } from "./always";
+import { Null, Undefined, nil } from "./primitives";
 
 /** Checks whether x does not satisfy the predicate
  * WARNING: Type guards will fail with not. Negated types are not supported in TS!
@@ -72,18 +72,18 @@ export const either = <T extends Predicate, U extends Predicate>(f: T, g: U) => 
 
 /** Check whether x satisfies predicate, or is undefined */
 export const maybe = <T extends Predicate>(f: T) => (x: any): x is GuardedType<T> | undefined =>
-	either(f, primitives.undefined)(x);
+	either(f, Undefined)(x);
 
 /** Check whether x satisfies predicate, or is nil. Alias to `maybe` */
 export const optional = maybe;
 
 /** Check whether x satisfies predicate, or is null */
 export const nullable = <T extends Predicate>(f: T) => (x: any): x is GuardedType<T> | null =>
-	either(f, primitives.null)(x);
+	either(f, Null)(x);
 
 /** Check whether x satisfies predicate, or is nil */
 export const nilable = <T extends Predicate>(f: T) => (x: any): x is GuardedType<T> | Nil =>
-	either(f, primitives.nil)(x);
+	either(f, nil)(x);
 
 /** check whether x satisfies one of the given literal types */
 export const oneOf = <Y extends LiteralTypes, Ys extends Y[]>(ys: Y[]) => (
@@ -127,8 +127,8 @@ export const tuple = product;
 /** Check whether all elements of x satisfy predicate */
 export const array = <T extends Predicate>(f: T) => (xs: any[]): xs is Array<GuardedType<T>> => {
 	try {
-		// minor optimisation to ignore iterating in case of r.Array(r.any)
-		if (f === (always.T as Predicate)) {
+		// minor optimisation to ignore iterating in case of array(any)
+		if (f === (any as Predicate)) {
 			return Array.isArray(xs);
 		}
 		return xs.every(x => f(x));
