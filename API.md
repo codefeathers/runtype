@@ -8,14 +8,14 @@ The following list presents the available predicate methods. Note that several t
 
 - [Always](#always)
 
-	- [`T / any / ignore`](#tx)
-	- [`F / fail`](#fx)
+	- [`T / any`](#tx)
+	- [`F / never`](#fx)
 
 - [Primitives](#primitives)
 
 	- [`nil`](#nilx)
-	- [`null`](#nullx)
-	- [`undefined`](#undefinedx)
+	- [`Null`](#nullx)
+	- [`Undefined`](#undefinedx)
 	- [`string`](#stringx)
 	- [`number`](#numberx)
 	- [`bool`](#boolx)
@@ -42,9 +42,9 @@ The following list presents the available predicate methods. Note that several t
 	- [`maybe / optional`](#maybefx)
 	- [`nullable`](#nullablefx)
 	- [`nilable`](#nilablefx)
-	- [`Array`](#arrayfx)
-	- [`Struct`](#structstructx)
-	- [`Extends`](#extendsf-structx)
+	- [`array`](#arrayfx)
+	- [`struct`](#structstructx)
+	- [`extend`](#extendf-structx)
 
 - [Unsafe](#unsafe)
 
@@ -53,11 +53,11 @@ The following list presents the available predicate methods. Note that several t
 ## Always
 
 #### **`T(x)`**:
-##### aliases: **`any(x)`**, **`ignore(x)`**
+##### aliases: **`any(x)`**
 - [asserts] type of `x` is accepted as is
 
 #### **`F(x)`**:
-##### aliases: **`fail(x)`**
+##### aliases: **`never(x)`**
 - [asserts] `x` is never
 
 ## Primitives
@@ -65,10 +65,10 @@ The following list presents the available predicate methods. Note that several t
 #### **`nil(x)`**:
 - [asserts] `x` is `null` or `undefined`
 
-#### **`null(x)`**:
+#### **`Null(x)`**:
 - [asserts] `x` is `null`
 
-#### **`undefined(x)`**:
+#### **`Undefined(x)`**:
 - [asserts] `x` is `undefined`
 
 #### **`string(x)`**:
@@ -155,15 +155,15 @@ The following list presents the available predicate methods. Note that several t
 - [where] `<fs>` is a tuple of Predicates
 - [asserts] `x` is a tuple whose members are represented by the types in `<fs>` in order
 
-#### **`Array(<f>)(xs)`**:
+#### **`array(<f>)(xs)`**:
 - [where] `<f>` is a Predicate
 - [asserts] `xs` is an array, where every member satisfies the type represented by `<f>`
 
-#### **`Struct(<struct>)(x)`**:
+#### **`struct(<struct>)(x)`**:
 - [where] `<struct>` is a JavaScript object, whose values are either nested structs, or Predicates. `<struct>` may deeply nest as much as required
 - [asserts] `x` is an object whose values satisfy the types provided by `<struct>`'s vaues. `x` must deeply nest in the same way `<struct>` is to pass
 
-#### **`Extends(<f>, <struct>)(x)`**:
+#### **`extend(<f>, <struct>)(x)`**:
 - [where] `<f>` is a predicate guarding a Struct type; `<struct>` is a JavaScript object, whose values are either nested structs, or Predicates. `<struct>` may deeply nest as much as required
 - [asserts] x is validated against the predicate's type at compile time, and validated against both the predicate `<f>` and the struct `<struct>` at runtime
 
