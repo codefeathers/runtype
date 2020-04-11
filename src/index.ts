@@ -9,6 +9,7 @@ import {
 	Predicate,
 	PredicatesToGuards,
 	Tuple,
+	CreateStructGuard,
 } from "../util";
 
 const T = <U>(x: U): x is U => true;
@@ -181,7 +182,6 @@ const combiners = {
 
 	/** Check whether x is a product type defined by fs */
 	product: <
-		// Predicates extends readonly Predicate[],
 		Predicates extends
 			| Tuple<Predicate, 1>
 			| Tuple<Predicate, 2>
@@ -202,7 +202,7 @@ const combiners = {
 	>(
 		fs: Predicates,
 	) => (xs: any): xs is GuardTuple => {
-		//TODO: variadic, type-guard is limited from 2 to 15 Predicates
+		//TODO: variadic, type-guard is limited from 1 to 15 Predicates
 		try {
 			return fs.every((f, i) => f(xs[i]));
 		} catch {
@@ -246,6 +246,24 @@ const combiners = {
 
 const object = {
 	/// ----- Object ----- ///
+
+	/**
+	 * Takes a Predicate and Struct, x is validated against the predicate's
+	 * type at compile time, and validated against both at runtime
+	 *
+	 * Similar to refinement, but with a compile-time check
+	 * and bare object as second param
+	 */
+	Extends: <
+		T extends Predicate,
+		Struct extends Partial<CreateStructGuard<GuardedType<T>>> & AnyStruct
+	>(
+		f: T,
+		struct: Struct,
+	) => <X extends GuardedType<T>>(x: X): x is X & GuardedStruct<Struct> => {
+		return f(x) && combiners.Struct(struct)(x);
+	},
+
 	/** Check whether object has property; object must be clearly typed ahead of time */
 	has: <O extends { [k: string]: any }>(o: O) => (x: any): x is keyof O => o.hasOwnProperty(x),
 };

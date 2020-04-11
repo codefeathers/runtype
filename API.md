@@ -44,6 +44,7 @@ The following list presents the available predicate methods. Note that several t
 	- [`nilable`](#nilablefx)
 	- [`Array`](#arrayfx)
 	- [`Struct`](#structstructx)
+	- [`Extends`](#extendsf-structx)
 
 - [Unsafe](#unsafe)
 
@@ -159,8 +160,12 @@ The following list presents the available predicate methods. Note that several t
 - [asserts] `xs` is an array, where every member satisfies the type represented by `<f>`
 
 #### **`Struct(<struct>)(x)`**:
-- [where] `<struct>` is a JavaScript object, whose values are either another struct, or Predicates. `<struct>` may deeply nest as much as required.
+- [where] `<struct>` is a JavaScript object, whose values are either nested structs, or Predicates. `<struct>` may deeply nest as much as required
 - [asserts] `x` is an object whose values satisfy the types provided by `<struct>`'s vaues. `x` must deeply nest in the same way `<struct>` is to pass
+
+#### **`Extends(<f>, <struct>)(x)`**:
+- [where] `<f>` is a predicate guarding a Struct type; `<struct>` is a JavaScript object, whose values are either nested structs, or Predicates. `<struct>` may deeply nest as much as required
+- [asserts] x is validated against the predicate's type at compile time, and validated against both the predicate `<f>` and the struct `<struct>` at runtime
 
 ## Unsafe
 
