@@ -6,12 +6,12 @@ export type Nil = null | undefined;
 /**
  * Types that can be expressed as a literal
  */
-type LiteralTypes = string | number | boolean | bigint;
+export type LiteralTypes = Nil | string | number | bigint | boolean | symbol;
 
 /**
  * All native types in JavaScript
  */
-type NativeTypes = {
+export type NativeTypes = {
 	string: string;
 	number: number;
 	boolean: boolean;

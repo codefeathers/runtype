@@ -1,14 +1,14 @@
 import { LiteralTypes, NativeTypes, AnyConstructor, Predicate, GuardedType } from "../../util";
 import { any } from "./always";
 
-/** Literal equality of string, number, boolean, or object */
+/** Literal equality of string, number, bigint, boolean, or symbol */
 export const literal = <T extends LiteralTypes>(y: T) => (x: any): x is T => x === y;
 
-/** Literal equality of string, number, boolean, or object */
+/** Literal equality of string, number, bigint, boolean, or symbol */
 export const equals = literal;
 
 /** Check whether x is an instanceof X */
-export const is = <T extends AnyConstructor>(X: T) => (x: any): x is InstanceType<T> => {
+export const is = <Cons extends AnyConstructor>(X: Cons) => (x: any): x is InstanceType<Cons> => {
 	try {
 		return x.constructor === X || x instanceof X;
 	} catch {
