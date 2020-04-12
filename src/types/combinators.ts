@@ -12,7 +12,7 @@ import {
 } from "../../util";
 
 import { any } from "./always";
-import { Null, Undefined, nil } from "./primitives";
+import { nil, primitive } from "./primitives";
 
 /** Exclude type represented by g from type represented by f */
 export const exclude = <T extends Predicate, U extends Predicate>(f: T, g: U) => (
@@ -65,14 +65,14 @@ export const either = <T extends Predicate, U extends Predicate>(f: T, g: U) => 
 
 /** Check whether x satisfies predicate, or is undefined */
 export const maybe = <T extends Predicate>(f: T) => (x: any): x is GuardedType<T> | undefined =>
-	either(f, Undefined)(x);
+	either(f, primitive.undefined)(x);
 
 /** Check whether x satisfies predicate, or is nil. Alias to `maybe` */
 export const optional = maybe;
 
 /** Check whether x satisfies predicate, or is null */
 export const nullable = <T extends Predicate>(f: T) => (x: any): x is GuardedType<T> | null =>
-	either(f, Null)(x);
+	either(f, primitive.null)(x);
 
 /** Check whether x satisfies predicate, or is nil */
 export const nilable = <T extends Predicate>(f: T) => (x: any): x is GuardedType<T> | Nil =>
