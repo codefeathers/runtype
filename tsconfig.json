@@ -10,5 +10,5 @@
 		"noErrorTruncation": true /* As a side-effect, does not truncate long inferred types on hover */,
 		"esModuleInterop": true /* Enables emit interoperability between CommonJS and ES Modules via creation of namespace objects for all imports. Implies 'allowSyntheticDefaultImports'. */
 	},
-	"include": ["./src", "util.d.ts"]
+	"include": ["./src", "util.d.ts", "tuple.d.ts"]
 }
