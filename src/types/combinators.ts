@@ -5,14 +5,15 @@ import {
 	PredicatesToGuards,
 	UnionToIntersection,
 	LiteralTypes,
-	Tuple,
 	AnyStruct,
 	GuardedStruct,
 	CreateStructGuard,
 } from "../../util";
 
+import { Concat } from "../../tuple";
+
 import { any } from "./always";
-import { nil, primitive } from "./primitives";
+import { nil, primitive, number, string, symbol } from "./primitives";
 
 /** Exclude type represented by g from type represented by f */
 export const exclude = <T extends Predicate, U extends Predicate>(f: T, g: U) => (
@@ -83,35 +84,49 @@ export const oneOf = <Y extends LiteralTypes, Ys extends Y[]>(ys: Y[]) => (
 	x: any,
 ): x is Ys[number] => ys.some(y => y === x);
 
-/** Check whether x is a product type defined by fs */
-export const product = <
-	Predicates extends
-		| Tuple<Predicate, 1>
-		| Tuple<Predicate, 2>
-		| Tuple<Predicate, 3>
-		| Tuple<Predicate, 4>
-		| Tuple<Predicate, 5>
-		| Tuple<Predicate, 6>
-		| Tuple<Predicate, 7>
-		| Tuple<Predicate, 8>
-		| Tuple<Predicate, 9>
-		| Tuple<Predicate, 10>
-		| Tuple<Predicate, 11>
-		| Tuple<Predicate, 12>
-		| Tuple<Predicate, 13>
-		| Tuple<Predicate, 14>
-		| Tuple<Predicate, 15>,
-	GuardTuple extends PredicatesToGuards<Predicates>
->(
-	fs: Predicates,
-) => (xs: any): xs is GuardTuple => {
-	//TODO: variadic, type-guard is limited from 1 to 15 Predicates
-	try {
-		return fs.every((f, i) => f(xs[i]));
-	} catch {
+/**
+ * Create a tuple type of arbitrary length. Safe to consume in an `extends` clause.
+ * Do not do keyof on this.
+ */
+type Tuple<ElementT, L extends number> = Array<ElementT> & {
+	0: ElementT;
+	length: L;
+};
+
+interface product {
+	<Predicates extends Tuple<Predicate, number>>(fs: Predicates): (
+		xs: any,
+	) => xs is PredicatesToGuards<Predicates>;
+	<Predicates extends Tuple<Predicate, number>, Rest extends Predicate>(
+		fs: Predicates,
+		rest: Rest,
+	): (xs: any) => xs is PredicatesToGuards<Concat<Predicates, [...Rest[]]>>;
+}
+
+/** Check whether x is an algebraic product type (tuple) defined by fs.
+ * For an open ended tuple, pass a single predicate as second param */
+export const product = ((fs: Predicate[], rest?: Predicate) => (xs: any) => {
+	if (!Array.isArray(xs)) {
 		return false;
 	}
-};
+	if (rest) {
+		// input must at least be the size of the predicate list
+		if (xs.length < fs.length) {
+			return false;
+		} else {
+			return xs.every((x, idx) => (idx < fs.length ? fs[idx](x) : rest(x)));
+		}
+	} else {
+		// input must be exactly the size of the predicate list
+		if (xs.length !== fs.length) {
+			return false;
+		} else {
+			return xs.every((x, idx) => fs[idx](x));
+		}
+	}
+	// Needs assertion to understand the type correctly
+}) as product;
+
 /** Check whether x is a tuple of type defined by fs */
 export const tuple = product;
 
@@ -119,14 +134,14 @@ export const tuple = product;
 
 /** Check whether all elements of x satisfy predicate */
 export const array = <T extends Predicate>(f: T) => (xs: any[]): xs is Array<GuardedType<T>> => {
-	try {
-		// minor optimisation to ignore iterating in case of array(any)
-		if (f === (any as Predicate)) {
-			return Array.isArray(xs);
-		}
-		return xs.every(x => f(x));
-	} catch {
+	if (!Array.isArray(xs)) {
 		return false;
+	}
+	if (f === (any as Predicate)) {
+		// minor optimisation to ignore iterating in case of array(any)
+		return true;
+	} else {
+		return xs.every(x => f(x));
 	}
 };
 

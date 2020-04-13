@@ -49,7 +49,7 @@ export type GuardedType<T, Default = unknown> = T extends (x: any) => x is infer
 /**
  * Map a type of predicates to the guarded types represented by them
  */
-export type PredicatesToGuards<T> = { [K in keyof T]: GuardedType<T[K], never> };
+export type PredicatesToGuards<T> = MappedId<{ [K in keyof T]: GuardedType<T[K], never> }>;
 
 /**
  * Get props that can be assigned U
@@ -117,24 +117,6 @@ type StructGuardValue<T> = T extends {}
 export type CreateStructGuard<T> = {} & {
 	[K in keyof T]: StructGuardValue<T[K]>;
 };
-
-/**
- * Add a member to the start of a tuple
- */
-export type Unshift<TailT extends any[], FrontT> = ((
-	front: FrontT,
-	...rest: TailT
-) => any) extends (...tuple: infer TupleT) => any
-	? TupleT
-	: never;
-
-/**
- * Create a tuple type of arbitrary length
- */
-export type Tuple<ElementT, LengthT extends number, OutputT extends any[] = []> = {
-	0: OutputT;
-	1: Tuple<ElementT, LengthT, Unshift<OutputT, ElementT>>;
-}[OutputT["length"] extends LengthT ? 0 : 1];
 
 /**
  * Convert a union to an intersection
