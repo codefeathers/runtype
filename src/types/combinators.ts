@@ -13,7 +13,7 @@ import {
 import { Concat } from "../../tuple";
 
 import { any } from "./always";
-import { nil, primitive, number, string, symbol } from "./primitives";
+import { nil, nul, undef } from "./primitives";
 
 /** Exclude type represented by g from type represented by f */
 export const exclude = <T extends Predicate, U extends Predicate>(f: T, g: U) => (
@@ -53,12 +53,6 @@ export const or = <
 	}
 };
 
-/** Check whether x satisfies at least one of the predicates. Alias to `or` */
-export const sum = or;
-
-/** Check whether x satisfies at least one of the predicates. Alias to `or` */
-export const union = or;
-
 /** Check whether x satisfies either of two types */
 export const either = <T extends Predicate, U extends Predicate>(f: T, g: U) => (
 	x: any,
@@ -66,14 +60,14 @@ export const either = <T extends Predicate, U extends Predicate>(f: T, g: U) => 
 
 /** Check whether x satisfies predicate, or is undefined */
 export const maybe = <T extends Predicate>(f: T) => (x: any): x is GuardedType<T> | undefined =>
-	either(f, primitive.undefined)(x);
+	either(f, undef)(x);
 
 /** Check whether x satisfies predicate, or is nil. Alias to `maybe` */
 export const optional = maybe;
 
 /** Check whether x satisfies predicate, or is null */
 export const nullable = <T extends Predicate>(f: T) => (x: any): x is GuardedType<T> | null =>
-	either(f, primitive.null)(x);
+	either(f, nul)(x);
 
 /** Check whether x satisfies predicate, or is nil */
 export const nilable = <T extends Predicate>(f: T) => (x: any): x is GuardedType<T> | Nil =>

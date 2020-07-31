@@ -18,25 +18,8 @@ export const bool = (x: any): x is boolean => x === true || x === false;
 /** Check whether x is a symbol */
 export const symbol = (x: any): x is symbol => typeof x === "symbol";
 
-export const primitive = {
-	/** Check whether x is null */
-	null: (x: any): x is null => x === null,
+/** Check whether x is null */
+export const nul = (x: any): x is null => x === null;
 
-	/** Check whether x is undefined */
-	undefined: (x: any): x is undefined => x === undefined,
-
-	/** Check whether x is a string */
-	string,
-
-	/** Check whether x is a number */
-	number,
-
-	/** Check whether x is a bigint */
-	bigint,
-
-	/** Check whether x is a boolean */
-	bool,
-
-	/** Check whether x is a symbol */
-	symbol,
-};
+/** Check whether x is undefined */
+export const undef = (x: any): x is undefined => x === undefined;

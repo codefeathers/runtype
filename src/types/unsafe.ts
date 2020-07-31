@@ -14,11 +14,5 @@ export const own = <T, Pred extends (x: T) => boolean = (x: T) => boolean>(f: Pr
 	x: any,
 ): x is T extends never ? GuardedType<Pred, never> : T => f(x);
 
-declare const x: any;
-
-if (own((x: any): x is number => x > 0)(x)) {
-	x;
-}
-
 /** Pass a type parameter and runtype will trust the type you think x is. Alias to `own` */
 export const as = own;
