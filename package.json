@@ -20,6 +20,7 @@
 	"scripts": {
 		"test": "ava",
 		"build": "rimraf dist && tsc",
+		"build:w": "rimraf dist && tsc --watch",
 		"prepare": "npm run build"
 	},
 	"files": [
@@ -38,8 +39,8 @@
 	},
 	"homepage": "https://github.com/codefeathers/runtype#readme",
 	"devDependencies": {
-		"ava": "^3.5.0",
+		"ava": "^3.11.0",
 		"rimraf": "^3.0.2",
-		"typescript": "^3.8.3"
+		"typescript": "^3.9.7"
 	}
 }
