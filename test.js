@@ -45,17 +45,17 @@ test("null", t => {
 	t.plan(3);
 	{
 		// undefined
-		const res = r.Null();
+		const res = r.nul();
 		t.false(res);
 	}
 	{
 		// undefined, expicit
-		const res = r.Null(undefined);
+		const res = r.nul(undefined);
 		t.false(res);
 	}
 	{
 		// null
-		const res = r.Null(null);
+		const res = r.nul(null);
 		t.true(res);
 	}
 });
@@ -64,17 +64,17 @@ test("undefined", t => {
 	t.plan(3);
 	{
 		// undefined
-		const res = r.Undefined();
+		const res = r.undef();
 		t.true(res);
 	}
 	{
 		// undefined, explicit
-		const res = r.Undefined(undefined);
+		const res = r.undef(undefined);
 		t.true(res);
 	}
 	{
 		//explicit null
-		const res = r.Undefined(null);
+		const res = r.undef(null);
 		t.false(res);
 	}
 });
@@ -161,35 +161,6 @@ test("symbol", t => {
 	{
 		// with well-known symbol
 		const res = r.symbol(Symbol.iterator);
-		t.true(res);
-	}
-});
-
-test("object", t => {
-	t.plan(5);
-	{
-		// without param
-		const res = r.object();
-		t.false(res);
-	}
-	{
-		// with null
-		const res = r.object(null);
-		t.false(res);
-	}
-	{
-		// with object literal
-		const res = r.object({});
-		t.true(res);
-	}
-	{
-		// with array literal
-		const res = r.object([]);
-		t.true(res);
-	}
-	{
-		// with Map
-		const res = r.object(new Map());
 		t.true(res);
 	}
 });
@@ -283,36 +254,6 @@ test("type", t => {
 	{
 		// with "null" and null
 		const res = r.type("null")(null);
-		t.true(res);
-	}
-});
-
-test("stringTag", t => {
-	{
-		// without param
-		const res = r.stringTag()();
-		t.false(res);
-	}
-	{
-		// with incorrect string tag
-		class X {
-			get [Symbol.toStringTag]() {
-				return "X";
-			}
-		}
-		const x = new X();
-		const res = r.stringTag("Y")(x);
-		t.false(res);
-	}
-	{
-		// with correct param
-		class X {
-			get [Symbol.toStringTag]() {
-				return "X";
-			}
-		}
-		const x = new X();
-		const res = r.stringTag("X")(x);
 		t.true(res);
 	}
 });
