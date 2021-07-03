@@ -47,6 +47,11 @@ export type AnyStruct = {
 export type GuardedType<T, Default = unknown> = T extends (x: any) => x is infer T ? T : Default;
 
 /**
+ * A Predicate with defined guard
+ */
+export type GuardedPredicate<T> = (x: any) => x is T;
+
+/**
  * Map a type of predicates to the guarded types represented by them
  */
 export type PredicatesToGuards<T> = MappedId<{ [K in keyof T]: GuardedType<T[K], never> }>;

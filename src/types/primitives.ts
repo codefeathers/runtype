@@ -13,7 +13,7 @@ export const number = (x: any): x is number => typeof x === "number";
 export const bigint = (x: any): x is bigint => typeof x === "bigint";
 
 /** Check whether x is a boolean */
-export const bool = (x: any): x is boolean => x === true || x === false;
+export const boolean = (x: any): x is boolean => x === true || x === false;
 
 /** Check whether x is a symbol */
 export const symbol = (x: any): x is symbol => typeof x === "symbol";

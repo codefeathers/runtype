@@ -1,4 +1,13 @@
 /**
+ * Create a tuple type of arbitrary length. Safe to consume in an `extends` clause.
+ * Do not do keyof on this.
+ */
+export type Tuple<ElementT, L extends number> = Array<ElementT> & {
+	0: ElementT;
+	length: L;
+};
+
+/**
  * Add a member to the start of a tuple
  */
 export type Unshift<TailT extends any[], FrontT> = ((
