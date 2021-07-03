@@ -1,4 +1,4 @@
-import { Predicate, GuardedType } from "../../util";
+import { Predicate, GuardedType } from "../util.d.ts";
 
 /** Checks whether x does not satisfy the predicate.
  * WARNING! Type guards will fail with not. Negated types are not supported in TS!

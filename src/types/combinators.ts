@@ -8,12 +8,12 @@ import {
 	AnyStruct,
 	GuardedStruct,
 	CreateStructGuard,
-} from "../../util";
+} from "../util.d.ts";
 
-import { Concat, Tuple } from "../../tuple";
+import { Concat, Tuple } from "../../tuple.d.ts";
 
-import { any } from "./always";
-import { nil, nul, undef } from "./primitives";
+import { any } from "./always.ts";
+import { nil, nul, undef } from "./primitives.ts";
 
 /** Exclude type represented by g from type represented by f */
 export const exclude =
@@ -23,7 +23,10 @@ export const exclude =
 
 /** Check whether x satisfies all predicates */
 export const intersect =
-	<Predicates extends Predicate[], GuardUnion extends PredicatesToGuards<Predicates>[number]>(
+	<
+		Predicates extends Predicate[],
+		GuardUnion extends PredicatesToGuards<Predicates>[number],
+	>(
 		fs: Predicates,
 	) =>
 	(x: any): x is UnionToIntersection<GuardUnion> => {
@@ -42,7 +45,10 @@ export const refinement =
 
 /** Check whether x satisfies at least one of the predicates */
 export const union =
-	<Predicates extends Predicate[], GuardUnion extends PredicatesToGuards<Predicates>[number]>(
+	<
+		Predicates extends Predicate[],
+		GuardUnion extends PredicatesToGuards<Predicates>[number],
+	>(
 		fs: Predicates,
 	) =>
 	(x: any): x is GuardUnion => {
@@ -164,7 +170,10 @@ export const struct =
  * and bare object as second param
  */
 export const extend =
-	<T extends Predicate, Struct extends Partial<CreateStructGuard<GuardedType<T>>> & AnyStruct>(
+	<
+		T extends Predicate,
+		Struct extends Partial<CreateStructGuard<GuardedType<T>>> & AnyStruct,
+	>(
 		f: T,
 		structObj: Struct,
 	) =>
