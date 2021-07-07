@@ -37,8 +37,8 @@ export const intersect =
 		}
 	};
 
-/** Check whether x satisfies a base type and a refinement */
-export const refinement =
+/** Check whether x satisfies both given types */
+export const and =
 	<T extends Predicate, U extends Predicate>(f: T, g: U) =>
 	(x: any): x is GuardedType<T, never> & GuardedType<U, never> =>
 		f(x) && g(x);
@@ -60,7 +60,7 @@ export const union =
 	};
 
 /** Check whether x satisfies either of two types */
-export const either =
+export const or =
 	<T extends Predicate, U extends Predicate>(f: T, g: U) =>
 	(x: any): x is GuardedType<T | U> =>
 		f(x) || g(x);
@@ -69,19 +69,19 @@ export const either =
 export const optional =
 	<T extends Predicate>(f: T) =>
 	(x: any): x is GuardedType<T> | undefined =>
-		either(f, undef)(x);
+		or(f, undef)(x);
 
 /** Check whether x satisfies predicate, or is null */
 export const nullable =
 	<T extends Predicate>(f: T) =>
 	(x: any): x is GuardedType<T> | null =>
-		either(f, nul)(x);
+		or(f, nul)(x);
 
 /** Check whether x satisfies predicate, or is nil */
 export const nilable =
 	<T extends Predicate>(f: T) =>
 	(x: any): x is GuardedType<T> | Nil =>
-		either(f, nil)(x);
+		or(f, nil)(x);
 
 /** check whether x satisfies one of the given literal types */
 export const oneOf =
