@@ -11,12 +11,7 @@ export const not =
 
 /** Pass a type parameter and an unguarded predicate as f;
  * runtype will trust the type of x as given, provided your predicate returns true */
-// export const own = <T>(f: (x: T) => boolean) => (x: any): x is T => f(x);
-
-export const own =
+export const as =
 	<T, Pred extends (x: T) => boolean = (x: T) => boolean>(f: Pred) =>
 	(x: any): x is T extends never ? GuardedType<Pred, never> : T =>
 		f(x);
-
-/** Pass a type parameter and runtype will trust the type you think x is. Alias to `own` */
-export const as = own;
