@@ -13,10 +13,15 @@ import {
 } from "./primitives.ts";
 
 Deno.test({
-	name: "null, undefined, and nil",
+	name: "Nil",
 	fn: () => {
 		expectType<Nil, null | undefined>(true);
+	},
+});
 
+Deno.test({
+	name: "null",
+	fn: () => {
 		{
 			expectGuard<null, typeof nul>(true);
 
@@ -25,7 +30,12 @@ Deno.test({
 			assertEquals(false, nul(5));
 			assertEquals(false, nul({}));
 		}
+	},
+});
 
+Deno.test({
+	name: "undefined",
+	fn: () => {
 		{
 			expectGuard<undefined, typeof undef>(true);
 
@@ -34,7 +44,12 @@ Deno.test({
 			assertEquals(false, undef(5));
 			assertEquals(false, undef({}));
 		}
+	},
+});
 
+Deno.test({
+	name: "nil",
+	fn: () => {
 		{
 			expectGuard<Nil, typeof nil>(true);
 
