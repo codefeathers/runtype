@@ -144,6 +144,8 @@ export const array =
 export const struct =
 	<Struct extends AnyStruct>(structObj: Struct) =>
 	(x: any): x is GuardedStruct<Struct> => {
+		if (!x || typeof x !== "object") return false;
+
 		try {
 			for (const key in structObj) {
 				const pred = (
