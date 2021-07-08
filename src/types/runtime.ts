@@ -1,12 +1,4 @@
-import {
-	LiteralTypes,
-	NativeTypes,
-	AnyConstructor,
-	Predicate,
-	GuardedType,
-} from "../util.d.ts";
-
-import { any } from "./always.ts";
+import { LiteralTypes, NativeTypes, AnyConstructor } from "../util.d.ts";
 
 /** Literal equality of string, number, bigint, boolean, or symbol */
 export const literal =
@@ -14,15 +6,12 @@ export const literal =
 	(x: unknown): x is T =>
 		x === y;
 
-/** Literal equality of string, number, bigint, boolean, or symbol */
-export const equals = literal;
-
 /** Check whether x is an instanceof X */
 export const is =
 	<Cons extends AnyConstructor>(X: Cons) =>
 	(x: unknown): x is InstanceType<Cons> => {
 		try {
-			// TODO(mkr): benchmark try/catch against typeof x === "object"
+			// TODO(mkr): benchmark try/catch against typeof x === "object" &&
 			// @ts-ignore If this throws, we'll catch it
 			return x.constructor === X || x instanceof X;
 		} catch {
@@ -35,22 +24,3 @@ export const type =
 	<T extends keyof NativeTypes>(name: T) =>
 	(x: unknown): x is NativeTypes[T] =>
 		x === null ? name === "null" : typeof x === name;
-
-/**
- * Check whether x has key and its value matches the type represented by pred.
- * pred defaults to `any`.
- */
-export const has =
-	<T extends string | number, Pred extends Predicate>(
-		key: T,
-		pred: Pred = any as any,
-	) =>
-	(x: unknown): x is Record<T, GuardedType<Pred>> => {
-		try {
-			// TODO(mkr): benchmark try/catch against typeof x === "object"
-			// @ts-ignore If this throws, we'll catch it
-			return Object.prototype.hasOwnProperty.call(x, key) && pred(x[key]);
-		} catch {
-			return false;
-		}
-	};
