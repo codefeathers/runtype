@@ -1,4 +1,4 @@
-import { expectType, expectGuard, assertEquals } from "../test-util.ts";
+import { expectType, expectGuard, assertEquals } from "./test-util.ts";
 
 import { Nil } from "../util.d.ts";
 import {

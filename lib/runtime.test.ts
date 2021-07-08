@@ -1,4 +1,4 @@
-import { expectGuard, assertEquals } from "../test-util.ts";
+import { expectGuard, assertEquals } from "./test-util.ts";
 
 import { is, literal, type } from "./runtime.ts";
 

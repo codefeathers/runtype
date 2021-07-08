@@ -1,4 +1,4 @@
-import { expectValue } from "../test-util.ts";
+import { expectValue } from "./test-util.ts";
 import { GuardedPredicate } from "../util.d.ts";
 
 import { any, never } from "./always.ts";

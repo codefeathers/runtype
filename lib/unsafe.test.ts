@@ -1,4 +1,4 @@
-import { expectGuard, assertEquals } from "../test-util.ts";
+import { expectGuard, assertEquals } from "./test-util.ts";
 
 import { string } from "./primitives.ts";
 import { and, struct } from "./combinators.ts";

@@ -1,6 +1,6 @@
 {
 	"name": "@codefeathers/runtype",
-	"version": "0.10.0",
+	"version": "0.11.0",
 	"main": "dist",
 	"types": "dist/index.d.ts",
 	"description": "Runtime type assertions that return",

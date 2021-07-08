@@ -10,7 +10,7 @@ import {
 	CreateStructGuard,
 } from "../util.d.ts";
 
-import { Concat, Tuple } from "../../tuple.d.ts";
+import { Concat, Tuple } from "../tuple.d.ts";
 
 import { any } from "./always.ts";
 import { nil, nul, undef } from "./primitives.ts";
