@@ -1,9 +1,9 @@
-export * from "./types/always.ts";
+export * from "./lib/always.ts";
 
-export * from "./types/primitives.ts";
+export * from "./lib/primitives.ts";
 
-export * from "./types/runtime.ts";
+export * from "./lib/runtime.ts";
 
-export * from "./types/combinators.ts";
+export * from "./lib/combinators.ts";
 
-export * as unsafe from "./types/unsafe.ts";
+export * as unsafe from "./lib/unsafe.ts";
