@@ -1,3 +1,6 @@
+> [!CAUTION]
+> This package is DEPRECATED. [Zod](https://github.com/colinhacks/zod) has implemented everything this library wanted to.
+
 # runtype
 
 Runtime type assertions that return.
